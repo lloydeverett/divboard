@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>divboard</title>
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="jquery-3.7.1.slim.min.js"></script>
+    <script src="beautify-html.min.js"></script>
+    <script src="split.js"></script>
+    <style id="divboard-input-styles"> /* populated in JS */ </style>
+</head>
+<body> <!-- "wide-layout" or "non-wide-layout" class will be added to body according to layout in JS -->
+    <div class="main-content if-wide-layout" id="main-content">
+        <div class="split"> <!-- "vertical split" with a single elem, because no need to make the styling a special case here -->
+            <div class="pane output" id="output-displayed-in-main-content">
+                <div class="gutter-titlebar">Divboard</div>
+                <div class="pane-body">
+                    <div class="pane-body-inner" id="main-content-divboard-container-parent">
+                        <!-- when in wide layout, divboard container elem will be put here in JS -->
+                        <!-- <div class="divboard-container" id="divboard-container" contenteditable="true"></div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="stack" id="stack">
+        <div class="split">
+            <div class="pane output if-non-wide-layout" id="output-displayed-in-stack">
+                <div class="gutter-titlebar">Divboard</div>
+                <div class="pane-body">
+                    <div class="pane-body-inner" id="stack-divboard-container-parent">
+                        <!-- when in non-wide layout, divboard container elem will be put here in JS -->
+                        <!-- <div class="divboard-container" id="divboard-container" contenteditable="true"></div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="pane content" id="content">
+                <div class="gutter-titlebar">Markup</div>
+                <div class="pane-body">
+                    <div class="pane-body-inner">
+                        <div class="textedit" contenteditable id="content-edit"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="pane src" id="src">
+                <div class="gutter-titlebar">JS</div>
+                <div class="pane-body">
+                    <div class="pane-body-inner">
+                        <div class="textedit" contenteditable id="src-edit"></div>
+                </div>
+            </div>
+            </div>
+            <div class="pane css" id="css">
+                <div class="gutter-titlebar">CSS</div>
+                <div class="pane-body">
+                    <div class="pane-body-inner">
+                        <div class="textedit" contenteditable id="css-edit"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
+

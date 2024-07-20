@@ -1,0 +1,159 @@
+
+body {
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    font-weight: 500;
+    box-sizing: border-box;
+    font-family: "Inter Tight", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0;
+    background: #604f46;
+}
+body.non-wide-layout > * {
+    flex: 1;
+}
+
+.split {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.pane {
+    position: relative;
+}
+.main-content .pane {
+    flex: 1;
+}
+
+.gutter-titlebar {
+    padding: 0 10px;
+    pointer-events: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gutter-titlebar {
+    position: absolute;
+    top: -22px;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+}
+
+.output {
+    background-color: #665c54;
+    font-family: "Inter";
+    font-weight: 400;
+    margin-top: 22px;
+}
+.output .gutter-titlebar {
+    background-color: #504945;
+    color: #ebdbb2;
+}
+
+.wide-layout .content {
+    margin-top: 22px;
+}
+.content {
+    background-color: #ebdbb2;
+    color: #3c3836;
+}
+.content .gutter-titlebar {
+    background-color: #d5c4a1;
+    color: #3c3836;
+}
+.content::selection, .content *::selection {
+    background: #c3aa79;
+}
+
+.src {
+    background-color: #7cbb7e;
+    color: #2a2725;
+}
+.src::selection {
+    background: #ebdbb2;
+}
+.src .gutter-titlebar {
+    background-color: #427b58;
+    color: #ebdbb2;
+}
+.src::selection, .src *::selection {
+    background: #4a9366;
+}
+
+.css {
+    background-color: #da7634;
+    color: #2a2725;
+}
+.css .gutter-titlebar {
+    background-color: #af3a03;
+    color: #ebdbb2;
+}
+.css::selection, .css *::selection {
+    background: #c95f19;
+}
+
+
+.pane-body {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+.divboard-container {
+    color: #ebdbb2;
+    padding: 10px;
+    font-size: 16px;
+}
+.divboard-container::selection, .divboard-container *::selection {
+    background: #4a413b;
+}
+
+.pane-body-inner {
+    overflow: auto;
+    height: 100%;
+}
+.textedit {
+    min-height: calc(100% - 20px);
+    padding: 10px;
+    font-size: 15px;
+    font-family: "Inconsolata", monospace;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings:
+      "wdth" 100;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: 0;
+    white-space: pre;
+}
+div[contenteditable="true"] {
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: 0;
+}
+textarea {
+    margin: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    overflow: visible;
+}
+
