@@ -24,7 +24,6 @@ body.non-wide-layout > * {
     flex-direction: column;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
 }
 
 .pane {
@@ -35,7 +34,6 @@ body.non-wide-layout > * {
 }
 
 .titlebar {
-    padding: 0 10px;
     pointer-events: none;
     display: flex;
     flex-direction: row;
@@ -47,6 +45,20 @@ body.non-wide-layout > * {
     bottom: 100%;
     left: 0;
     right: 0;
+}
+
+.titlebar::before, .pane::before {
+    position: absolute;
+    left: var(--horizontal-gutter-size);
+    right: 100%;
+    top: 0;
+    bottom: 0;
+    content: '';
+    pointer-events: none;
+    background-color: inherit;
+}
+body > .gutter {
+    cursor: col-resize;
 }
 
 .output {
@@ -67,8 +79,11 @@ body.non-wide-layout > * {
     background-color: #ebdbb2;
     color: #3c3836;
 }
+.content::before {
+    background: #d8c8a2;
+}
 .content .titlebar {
-    background-color: #d5c4a1;
+    background-color: #ccb98e;
     color: #3c3836;
 }
 .content::selection, .content *::selection {
@@ -86,6 +101,9 @@ body.non-wide-layout > * {
     background-color: #427b58;
     color: #ebdbb2;
 }
+.src::before {
+    background: #6fa871;
+}
 .src::selection, .src *::selection {
     background: #4a9366;
 }
@@ -93,6 +111,9 @@ body.non-wide-layout > * {
 .css {
     background-color: #da7634;
     color: #2a2725;
+}
+.css::before {
+    background-color: #bb652c;
 }
 .css .titlebar {
     background-color: #af3a03;
