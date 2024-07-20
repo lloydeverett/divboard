@@ -14,6 +14,7 @@
 <body> <!-- "wide-layout" or "non-wide-layout" class will be added to body according to layout in JS -->
     <div class="main-content if-wide-layout" id="main-content">
         <div class="split"> <!-- "vertical split" with a single elem, because no need to make the styling a special case here -->
+            <div id="codemirror-testing"></div>
             <div class="pane output" id="output-displayed-in-main-content">
                 <div class="gutter-titlebar">Divboard</div>
                 <div class="pane-body">
@@ -62,6 +63,7 @@
             </div>
         </div>
     </div>
+    <script src="codemirror/build/codemirror-init.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
