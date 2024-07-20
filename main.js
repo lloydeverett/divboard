@@ -78,7 +78,8 @@
 
 // constants
 const HORIZONTAL_GUTTER_SIZE = 13;
-document.documentElement.style.setProperty('--horizontal-gutter-size', `-${HORIZONTAL_GUTTER_SIZE}px`);
+document.documentElement.style.setProperty('--horizontal-gutter-size', `${HORIZONTAL_GUTTER_SIZE}px`);
+document.documentElement.style.setProperty('--horizontal-gutter-size-negative', `-${HORIZONTAL_GUTTER_SIZE}px`);
 
 // handle viewport width changes, and put divboard container elem in the right place
 let divboardContainer = $('<div class="divboard-container" id="divboard-container" contenteditable="true"></div>');

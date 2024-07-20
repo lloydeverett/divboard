@@ -18,6 +18,10 @@ body {
 body.non-wide-layout > * {
     flex: 1;
 }
+body.non-wide-layout .split .editor-pane {
+    margin-left: var(--horizontal-gutter-size);
+    box-sizing: border-box;
+}
 
 .split {
     display: flex;
@@ -41,15 +45,19 @@ body.non-wide-layout > * {
 }
 .titlebar {
     position: absolute;
+    padding-left: var(--horizontal-gutter-size);
     top: -22px;
     bottom: 100%;
     left: 0;
     right: 0;
 }
+.editor-pane .titlebar {
+    padding-left: 0;
+}
 
 .titlebar::before, .pane::before {
     position: absolute;
-    left: var(--horizontal-gutter-size);
+    left: var(--horizontal-gutter-size-negative);
     right: 100%;
     top: 0;
     bottom: 0;
