@@ -80,6 +80,9 @@
 const HORIZONTAL_GUTTER_SIZE = 13;
 document.documentElement.style.setProperty('--horizontal-gutter-size', `${HORIZONTAL_GUTTER_SIZE}px`);
 document.documentElement.style.setProperty('--horizontal-gutter-size-negative', `-${HORIZONTAL_GUTTER_SIZE}px`);
+const TITLEBAR_HEIGHT = 22;
+document.documentElement.style.setProperty('--titlebar-height', `${TITLEBAR_HEIGHT}px`);
+document.documentElement.style.setProperty('--titlebar-height-negative', `-${TITLEBAR_HEIGHT}px`);
 
 // handle viewport width changes, and put divboard container elem in the right place
 let divboardContainer = $('<div class="divboard-container" id="divboard-container" contenteditable="true"></div>');
@@ -99,13 +102,12 @@ function onViewportWidthChanged() {
         activeSplits = [
             Split(['#content', '#src', '#css'], {
               minSize: 0,
-              gutterSize: 22,
+              gutterSize: TITLEBAR_HEIGHT,
               direction: 'vertical'
             }),
             Split(['#main-content', '#stack'], {
               minSize: 0,
-              // gutterSize: 4,
-              gutterSize: 14,
+              gutterSize: HORIZONTAL_GUTTER_SIZE,
               direction: 'horizontal',
               sizes: [60, 40]
             }),
@@ -121,7 +123,7 @@ function onViewportWidthChanged() {
         activeSplits = [
             Split(['#output-displayed-in-stack', '#content', '#src', '#css'], {
               minSize: 0,
-              gutterSize: 22,
+              gutterSize: TITLEBAR_HEIGHT,
               direction: 'vertical'
             })
         ];

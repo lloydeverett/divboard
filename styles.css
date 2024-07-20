@@ -46,7 +46,7 @@ body.non-wide-layout .split .editor-pane {
 .titlebar {
     position: absolute;
     padding-left: var(--horizontal-gutter-size);
-    top: -22px;
+    top: var(--titlebar-height-negative);
     bottom: 100%;
     left: 0;
     right: 0;
@@ -73,7 +73,7 @@ body > .gutter {
     background-color: #665c54;
     font-family: "Inter";
     font-weight: 400;
-    margin-top: 22px;
+    margin-top: var(--titlebar-height);
 }
 .output .titlebar {
     background-color: #504945;
@@ -81,7 +81,7 @@ body > .gutter {
 }
 
 .wide-layout .content {
-    margin-top: 22px;
+    margin-top: var(--titlebar-height);
 }
 .content {
     background-color: #ebdbb2;
