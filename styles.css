@@ -34,14 +34,14 @@ body.non-wide-layout > * {
     flex: 1;
 }
 
-.gutter-titlebar {
+.titlebar {
     padding: 0 10px;
     pointer-events: none;
     display: flex;
     flex-direction: row;
     align-items: center;
 }
-.gutter-titlebar {
+.titlebar {
     position: absolute;
     top: -22px;
     bottom: 100%;
@@ -55,7 +55,7 @@ body.non-wide-layout > * {
     font-weight: 400;
     margin-top: 22px;
 }
-.output .gutter-titlebar {
+.output .titlebar {
     background-color: #504945;
     color: #ebdbb2;
 }
@@ -67,7 +67,7 @@ body.non-wide-layout > * {
     background-color: #ebdbb2;
     color: #3c3836;
 }
-.content .gutter-titlebar {
+.content .titlebar {
     background-color: #d5c4a1;
     color: #3c3836;
 }
@@ -82,7 +82,7 @@ body.non-wide-layout > * {
 .src::selection {
     background: #ebdbb2;
 }
-.src .gutter-titlebar {
+.src .titlebar {
     background-color: #427b58;
     color: #ebdbb2;
 }
@@ -94,7 +94,7 @@ body.non-wide-layout > * {
     background-color: #da7634;
     color: #2a2725;
 }
-.css .gutter-titlebar {
+.css .titlebar {
     background-color: #af3a03;
     color: #ebdbb2;
 }
