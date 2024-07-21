@@ -88,14 +88,14 @@ body > .gutter {
     color: #3c3836;
 }
 .content::before {
-    background: #d8c8a2;
+    background: #d8c8a3;
 }
 .content .titlebar {
     background-color: #ccb98e;
     color: #3c3836;
 }
 .content::selection, .content *::selection {
-    background: #c3aa79;
+    background: #c0a673;
 }
 
 .src {
