@@ -3,7 +3,7 @@
 
 The developer's notebook.
 
-What does this mean? I'm still figuring it out, and maybe I'll tell you at some point, but for now I'm just going to make sure I've documented the development process.
+What does this mean? I'm still figuring it out, and maybe I'll tell you at some point, but for now I'm just going to document the development process so I don't forget.
 
 ## Development
 
@@ -17,7 +17,7 @@ We have a bit of a frugal approach here:
 
 ### Iterating
 
-This is one area where our frugality pays off in that this is dead simple. Open [./index.html](./index.html) in your browser and text editor and modify to your heart's content.
+This is one area where our frugality pays off in that this is dead simple. Open [./index.html](./index.html) in your browser and text editor and start editing.
 
 ### CodeMirror
 
