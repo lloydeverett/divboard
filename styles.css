@@ -14,6 +14,7 @@ body {
     font-variation-settings:
       "slnt" 0;
     background: #604f46;
+    overflow: hidden;
 }
 body.non-wide-layout > * {
     flex: 1;
