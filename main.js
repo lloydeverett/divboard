@@ -151,9 +151,14 @@ if (typeof storedCss === 'undefined') {
 }
 $('#css-edit').html(storedCss);
 
+// define function for saving markup
+function saveMarkup() {
+    window.localStorage.setItem('content', $('#content-edit').html());
+}
+
 // pane input event listeners
 $('#content-edit').on('input', function(event) {
-    window.localStorage.setItem('content', $('#content-edit').html());
+    saveMarkup();
     renderMarkup();
 });
 $('#src-edit').on('input', function(event) {
@@ -182,7 +187,7 @@ applyStyles();
 new MutationObserver(function(m) {
     if ($('#divboard-container').html() !== blessedInnerHtml) {
         $('#content-edit').text(html_beautify($('#divboard-container').html()));
-        window.localStorage.setItem('content', $('#content-edit').html());
+        saveMarkup();
     }
 }).observe($('#divboard-container')[0], {
     characterData: true, attributes: true, childList: true, subtree: true
