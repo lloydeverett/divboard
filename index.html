@@ -38,7 +38,16 @@
                 </div>
             </div>
             <div class="pane editor-pane content" id="content">
-                <div class="titlebar">Markup</div>
+                <div class="titlebar">
+                    Markup
+                    <div class="titlebar-control">
+                        <div class="label">VIEW</div>
+                        <div class="button-group">
+                            <div class="button button-selected">Decorated</div>
+                            <div class="button">Raw</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="pane-body">
                     <div class="pane-body-inner">
                         <div class="textedit" contenteditable id="content-edit"></div>
@@ -47,7 +56,16 @@
             </div>
             <!-- TODO: project window -->
             <div class="pane editor-pane src" id="src">
-                <div class="titlebar">JS</div>
+                <div class="titlebar">
+                    JS
+                    <div class="titlebar-control">
+                        <div class="label">EVALUATE</div>
+                        <div class="button-group">
+                            <div class="button button-selected">Instantly</div>
+                            <div class="button">Per edit</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="pane-body">
                     <div class="pane-body-inner">
                         <div class="textedit" contenteditable id="src-edit"></div>

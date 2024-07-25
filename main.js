@@ -187,3 +187,9 @@ new MutationObserver(function(m) {
 }).observe($('#divboard-container')[0], {
     characterData: true, attributes: true, childList: true, subtree: true
 });
+
+// button group implementation
+$('.button-group > .button').click(function (event) {
+    $(event.currentTarget.parentNode.childNodes).removeClass('button-selected');
+    $(event.currentTarget).addClass('button-selected');
+});
