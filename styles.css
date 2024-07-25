@@ -196,35 +196,37 @@ textarea {
     align-items: stretch;
     height: 100%;
 }
-.label {
-    margin-left: 70px;
-    margin-right: 10px;
-    font-size: 0.9em;
-}
 .titlebar-control {
     display: flex;
     height: 100%;
     flex-direction: row;
     align-items: center;
     pointer-events: auto;
+    margin-left: 80px;
 }
 .button {
+    height: 85%;
+    align-self: center;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 10px;
     font-size: 0.9em;
-}
-.button:hover {
+    border-radius: 3px;
     background-color: #00000019;
 }
+.button:hover {
+    background-color: #75757519;
+}
 .label {
-    opacity: 0.7;
+    margin-right: 10px;
+    font-size: 0.9em;
+    opacity: 0.0;
 }
 .content .button-selected {
     background: #e4d0a2;
 }
 .src .button-selected {
-    background: #549c70;
+    background: #4f9369;
 }
