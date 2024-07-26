@@ -51,7 +51,8 @@ function onViewportWidthChanged() {
             Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
               minSize: 0,
               gutterSize: TITLEBAR_HEIGHT,
-              direction: 'vertical'
+              direction: 'vertical',
+              sizes: [45, 55 / 3, 55 / 3, 55 / 3]
             })
         ];
     }
