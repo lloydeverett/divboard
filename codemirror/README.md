@@ -5,12 +5,12 @@ We could chuck the sources in the root directory, load them with a `<script>` ta
 
  - We'd like divboards to be accessible via `file://` URLs.
  - CORS policies forbid `<script type="module">` tags for `file://` URLs.
- - CodeMirror is packaged as an ES Module and therefore its sources must be loaded as such.
+ - CodeMirror is packaged as an ES Module and therefore its sources would need to be loaded as such.
 
 So let's just use a bundler to produce plain old vanilla JS source from the ES modules:
 
 ```
 npm install --global rollup @rollup/plugin-terser
 # compile to a a self-executing function ('iife')
-rollup ./src/codemirror-init.js --file ./build/codemirror-init.js --format iife --plugin @rollup/plugin-terser
+rollup ./src/codemirror-init.js --file ./build/codemirror-init.js --format iife --plugin @rollup/plugin-terser --output.name codemirror
 ```
