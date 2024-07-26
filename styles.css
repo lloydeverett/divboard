@@ -251,4 +251,23 @@ div[contenteditable="true"] {
     flex-direction: row;
     align-items: center;
     padding: 0 13px;
+    color: white;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.menubar > * {
+    font-size: 1.15em;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.menubar-start {
+    justify-content: flex-start;
+}
+.menubar-center {
+    justify-content: center;
+}
+.menubar-end {
+    justify-content: flex-end;
 }
