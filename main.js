@@ -6,6 +6,11 @@ const TITLEBAR_HEIGHT = 22;
 document.documentElement.style.setProperty('--titlebar-height', `${TITLEBAR_HEIGHT}px`);
 document.documentElement.style.setProperty('--titlebar-height-negative', `-${TITLEBAR_HEIGHT}px`);
 
+// CodeMirror editor setup
+const markupEditor = codemirror.createMarkupEditor('<div></div>', $('#markup-edit')[0]);
+const srcEditor = codemirror.createSrcEditor('console.log("hi");', $('#src-edit')[0]);
+const cssEditor = codemirror.createCssEditor('div { background: green; }', $('#css-edit')[0]);
+
 // handle viewport width changes, and put divboard container elem in the right place
 let divboardContainer = $('<div class="divboard-container" id="divboard-container" contenteditable="true"></div>');
 let activeSplits = []
