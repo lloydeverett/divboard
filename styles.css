@@ -121,11 +121,11 @@ body > .gutter {
 }
 
 .css {
-    background-color: #e57b35;
+    background-color: #f48338;
     color: #2a2725;
 }
 .css::before {
-    background-color: #c76d30;
+    background-color: #d67534;
 }
 .css .titlebar {
     background-color: #af3a03;
