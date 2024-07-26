@@ -84,21 +84,21 @@ body > .gutter {
     color: #ebdbb2;
 }
 
-.wide-layout .content {
+.wide-layout .markup {
     margin-top: var(--titlebar-height);
 }
-.content {
+.markup {
     background-color: #ebdbb2;
     color: #3c3836;
 }
-.content::before {
+.markup::before {
     background: #d8c8a3;
 }
-.content .titlebar {
+.markup .titlebar {
     background-color: #ccb98e;
     color: #3c3836;
 }
-.content::selection, .content *::selection {
+.markup::selection, .markup *::selection {
     background: #c0a673;
 }
 
@@ -232,7 +232,7 @@ textarea {
 .button.button-selected {
     background: #d3d3d331;
 }
-.content .button-selected {
+.markup .button-selected {
     background: #e4d0a2;
 }
 .src .button-selected {

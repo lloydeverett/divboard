@@ -6,7 +6,7 @@ import {css} from "./mods/@codemirror-lang-css.js"
 new EditorView({
   doc: "<div>hello</div>\n",
   extensions: [basicSetup, html()],
-  parent: document.getElementById("content-edit")
+  parent: document.getElementById("markup-edit")
 });
 
 new EditorView({

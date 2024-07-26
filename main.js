@@ -1,4 +1,3 @@
-
 // constants
 const HORIZONTAL_GUTTER_SIZE = 13;
 document.documentElement.style.setProperty('--horizontal-gutter-size', `${HORIZONTAL_GUTTER_SIZE}px`);
@@ -23,7 +22,7 @@ function onViewportWidthChanged() {
         $('#main-content-divboard-container-parent').append(divboardContainer);
         activeSplits.forEach(function(split) { split.destroy(); })
         activeSplits = [
-            Split(['#content', '#src', '#css'], {
+            Split(['#markup', '#src', '#css'], {
               minSize: 0,
               gutterSize: TITLEBAR_HEIGHT,
               direction: 'vertical'
@@ -44,7 +43,7 @@ function onViewportWidthChanged() {
         $('#stack-divboard-container-parent').append(divboardContainer);
         activeSplits.forEach(function(split) { split.destroy(); })
         activeSplits = [
-            Split(['#output-displayed-in-stack', '#content', '#src', '#css'], {
+            Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
               minSize: 0,
               gutterSize: TITLEBAR_HEIGHT,
               direction: 'vertical'
@@ -58,11 +57,11 @@ $(window).on("resize", function(event) {
 });
 
 // load data from localStorage
-let storedContent = ''; // window.localStorage.getItem('content');
-if (typeof storedContent === 'undefined') {
-    storedContent = '';
+let storedMarkup = ''; // window.localStorage.getItem('content'); // todo rename to markup
+if (typeof storedMarkup === 'undefined') {
+    storedMarkup = '';
 }
-// $('#content-edit').html(storedContent);
+// $('#markup-edit').html(storedMarkup); // todo rename to markup
 let storedSrc = ''; // window.localStorage.getItem('src');
 if (typeof storedSrc === 'undefined') {
     storedSrc = '';
@@ -76,11 +75,11 @@ if (typeof storedCss === 'undefined') {
 
 // define function for saving markup
 function saveMarkup() {
-    // window.localStorage.setItem('content', $('#content-edit').html());
+    // window.localStorage.setItem('content', $('#markup-edit').html()); // todo rename to markup
 }
 
 // pane input event listeners
-$('#content-edit').on('input', function(event) {
+$('#markup-edit').on('input', function(event) {
     saveMarkup();
     renderMarkup();
 });
@@ -95,7 +94,7 @@ $('#css-edit').on('input', function(event) {
 // rendering of input markup to divboard
 let blessedInnerHtml; // "bless" known innerHtml so we don't later think this is a DOM mutation
 function renderMarkup() {
-    $('#divboard-container').html($('#content-edit').text());
+    $('#divboard-container').html($('#markup-edit').text());
     blessedInnerHtml = $('#divboard-container').html();
 }
 renderMarkup();
@@ -106,10 +105,10 @@ function applyStyles() {
 }
 applyStyles();
 
-// mutation observer to update content according to divboard changes
+// mutation observer to update markup according to divboard changes
 new MutationObserver(function(m) {
     if ($('#divboard-container').html() !== blessedInnerHtml) {
-        // $('#content-edit').text(html_beautify($('#divboard-container').html()));
+        // $('#markup-edit').text(html_beautify($('#divboard-container').html()));
         saveMarkup();
     }
 }).observe($('#divboard-container')[0], {
