@@ -94,8 +94,8 @@ $('#css-edit').on('input', function(event) {
 // rendering of input markup to divboard
 let blessedInnerHtml; // "bless" known innerHtml so we don't later think this is a DOM mutation
 function renderMarkup() {
-    $('#divboard-container').html($('#markup-edit').text());
-    blessedInnerHtml = $('#divboard-container').html();
+    // $('#divboard-container').html($('#markup-edit').text());
+    // blessedInnerHtml = $('#divboard-container').html();
 }
 renderMarkup();
 
