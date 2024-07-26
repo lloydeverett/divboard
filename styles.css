@@ -212,7 +212,6 @@ div[contenteditable="true"] {
     justify-content: center;
     padding: 0 10px;
     font-size: 0.9em;
-    border-radius: 3px;
 }
 .label {
     margin-right: 10px;
