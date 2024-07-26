@@ -10,7 +10,7 @@ We could chuck the sources in the root directory, load them with a `<script>` ta
 So let's just use a bundler to produce plain old vanilla JS source from the ES modules:
 
 ```
-npm install --global rollup
+npm install --global rollup @rollup/plugin-terser
 # compile to a a self-executing function ('iife')
-rollup ./src/codemirror-init.js --file ./build/codemirror-init.js --format iife
+rollup ./src/codemirror-init.js --file ./build/codemirror-init.js --format iife --plugin @rollup/plugin-terser
 ```
