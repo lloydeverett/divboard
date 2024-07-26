@@ -62,7 +62,7 @@ $(window).on("resize", function(event) {
 });
 
 // load data from localStorage
-let storedMarkup = ''; // window.localStorage.getItem('content'); // todo rename to markup
+let storedMarkup = ''; // window.localStorage.getItem('markup');
 if (typeof storedMarkup === 'undefined') {
     storedMarkup = '';
 }
@@ -80,7 +80,7 @@ if (typeof storedCss === 'undefined') {
 
 // define function for saving markup
 function saveMarkup() {
-    // window.localStorage.setItem('content', $('#markup-edit').html()); // todo rename to markup
+    // window.localStorage.setItem('markup', $('#markup-edit').html());
 }
 
 // pane input event listeners
