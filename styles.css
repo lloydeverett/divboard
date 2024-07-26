@@ -65,7 +65,7 @@ body {
     padding-left: 0;
 }
 
-.titlebar::before, .pane::before {
+.titlebar::before {
     position: absolute;
     left: var(--horizontal-gutter-size-negative);
     right: 100%;
@@ -76,7 +76,18 @@ body {
     background-color: inherit;
 }
 .main > .gutter {
+    z-index: 100;
     cursor: col-resize;
+}
+
+.cm-editor .cm-gutters {
+    -webkit-user-select: none;
+    user-select: none;
+    border: none;
+    color: #303030;
+}
+.cm-editor .cm-gutter .cm-activeLineGutter, .cm-editor .cm-activeLine {
+    background: #34343410;
 }
 
 .output {
@@ -97,14 +108,14 @@ body {
     background-color: #ebdbb2;
     color: #3c3836;
 }
-.markup::before {
+.markup .cm-editor .cm-gutters {
     background: #d8c8a3;
 }
 .markup .titlebar {
     background-color: #ccb98e;
     color: #3c3836;
 }
-.markup::selection, .markup *::selection {
+.markup .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
     background: #c0a673;
 }
 
@@ -119,10 +130,10 @@ body {
     background-color: #427b58;
     color: #ebdbb2;
 }
-.src::before {
+.src .cm-editor .cm-gutters {
     background: #6fa871;
 }
-.src::selection, .src *::selection {
+.src .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
     background: #4a9366;
 }
 
@@ -130,14 +141,14 @@ body {
     background-color: #f48338;
     color: #2a2725;
 }
-.css::before {
+.css .cm-editor .cm-gutters {
     background-color: #d67534;
 }
 .css .titlebar {
     background-color: #af3a03;
     color: #ebdbb2;
 }
-.css::selection, .css *::selection {
+.css .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
     background: #c95f19;
 }
 
@@ -149,6 +160,9 @@ body {
     top: 0;
     right: 0;
     bottom: 0;
+}
+.editor-pane .pane-body {
+    left: var(--horizontal-gutter-size-negative);
 }
 .divboard-container {
     color: #f7e6bb;
@@ -238,11 +252,6 @@ div[contenteditable="true"] {
 }
 .src .button-selected {
     background: #4f9369;
-}
-
-.cm-editor .cm-gutters {
-    -webkit-user-select: none;
-    user-select: none;
 }
 
 .menubar {
