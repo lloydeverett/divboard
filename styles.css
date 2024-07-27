@@ -291,3 +291,19 @@ div[contenteditable="true"] {
 .menubar-end {
     justify-content: flex-end;
 }
+
+.users {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.user-avatar {
+    border-radius: 12px;
+    width: 21px;
+    height: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    background-color: #b26487;
+}
