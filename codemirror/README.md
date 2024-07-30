@@ -14,3 +14,5 @@ npm install --global rollup @rollup/plugin-terser
 # compile to a a self-executing function ('iife')
 rollup ./src/codemirror-init.js --file ./build/codemirror-init.js --format iife --plugin @rollup/plugin-terser --output.name codemirror
 ```
+
+Note that the [ThemeMirror](https://thememirror.net/) sources are also included here to help us style the editors.
