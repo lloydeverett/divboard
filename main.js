@@ -6,10 +6,31 @@ const TITLEBAR_HEIGHT = 22;
 document.documentElement.style.setProperty('--titlebar-height', `${TITLEBAR_HEIGHT}px`);
 document.documentElement.style.setProperty('--titlebar-height-negative', `-${TITLEBAR_HEIGHT}px`);
 
+let storedMarkup = window.localStorage.getItem('markup');
+if (typeof storedMarkup === 'undefined') {
+    storedMarkup = '';
+}
+let storedSrc = window.localStorage.getItem('src');
+if (typeof storedSrc === 'undefined') {
+    storedSrc = '';
+}
+let storedCss = window.localStorage.getItem('css');
+if (typeof storedCss === 'undefined') {
+    storedCss = '';
+}
+
 // CodeMirror editor setup
-const markupEditor = codemirror.createMarkupEditor('<div></div>', $('#markup-edit')[0]);
-const srcEditor = codemirror.createSrcEditor('console.log("hi");', $('#src-edit')[0]);
-const cssEditor = codemirror.createCssEditor('div { background: green; }', $('#css-edit')[0]);
+const markupEditor = codemirror.createMarkupEditor(storedMarkup, $('#markup-edit')[0], function() {
+    saveMarkup();
+    renderMarkup();
+});
+const srcEditor = codemirror.createSrcEditor(storedSrc, $('#src-edit')[0], function() {
+    window.localStorage.setItem('src', srcEditor.state.doc.toString());
+});
+const cssEditor = codemirror.createCssEditor(storedCss, $('#css-edit')[0], function () {
+    window.localStorage.setItem('css', cssEditor.state.doc.toString());
+    applyStyles();
+});
 
 // handle viewport width changes, and put divboard container elem in the right place
 let divboardContainer = $('<div class="divboard-container" id="divboard-container" contenteditable="true"></div>');
@@ -62,40 +83,10 @@ $(window).on("resize", function(event) {
     onViewportWidthChanged();
 });
 
-// load data from localStorage
-let storedMarkup = ''; // window.localStorage.getItem('markup');
-if (typeof storedMarkup === 'undefined') {
-    storedMarkup = '';
-}
-// $('#markup-edit').html(storedMarkup); // todo rename to markup
-let storedSrc = ''; // window.localStorage.getItem('src');
-if (typeof storedSrc === 'undefined') {
-    storedSrc = '';
-}
-// $('#src-edit').html(storedSrc);
-let storedCss = ''; // window.localStorage.getItem('css');
-if (typeof storedCss === 'undefined') {
-    storedCss = '';
-}
-// $('#css-edit').html(storedCss);
-
 // define function for saving markup
 function saveMarkup() {
-    // window.localStorage.setItem('markup', $('#markup-edit').html());
+    window.localStorage.setItem('markup', markupEditor.state.doc.toString());
 }
-
-// pane input event listeners
-$('#markup-edit').on('input', function(event) {
-    saveMarkup();
-    renderMarkup();
-});
-$('#src-edit').on('input', function(event) {
-    // window.localStorage.setItem('src', $('#src-edit').html());
-});
-$('#css-edit').on('input', function(event) {
-    // window.localStorage.setItem('css', $('#css-edit').html());
-    applyStyles();
-});
 
 // rendering of input markup to divboard
 let blessedInnerHtml; // "bless" known innerHtml so we don't later think this is a DOM mutation

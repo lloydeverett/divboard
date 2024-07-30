@@ -7,26 +7,46 @@ import { birdsOfParadise } from "./mods/thememirror/themes/birds-of-paradise.js"
 import { gruvboxDark } from "./mods/thememirror/themes/gruvbox-dark.js";
 import { gruvboxLight } from "./mods/thememirror/themes/gruvbox-light.js";
 
-export function createMarkupEditor(content, parentNode) {
+export function createMarkupEditor(content, parentNode, onDocChanged) {
   return new EditorView({
     doc: content,
-    extensions: [vim(), basicSetup, html(), gruvboxLight],
+    extensions: [
+      EditorView.updateListener.of(
+        function (e) {
+          if (e.docChanged) {
+            onDocChanged();
+          }
+        }), vim(), basicSetup, html(), gruvboxLight],
     parent: parentNode
   });
 }
 
-export function createSrcEditor(content, parentNode) {
+export function createSrcEditor(content, parentNode, onDocChanged) {
   return new EditorView({
     doc: content,
-    extensions: [vim(), basicSetup, javascript(), gruvboxDark],
+    extensions: [
+      EditorView.updateListener.of(
+        function (e) {
+          if (e.docChanged) {
+            onDocChanged();
+          }
+        }),
+      vim(), basicSetup, javascript(), gruvboxDark],
     parent: parentNode
   });
 }
 
-export function createCssEditor(content, parentNode) {
+export function createCssEditor(content, parentNode, onDocChanged) {
   return new EditorView({
     doc: content,
-    extensions: [vim(), basicSetup, css(), birdsOfParadise],
+    extensions: [
+      EditorView.updateListener.of(
+        function (e) {
+          if (e.docChanged) {
+            onDocChanged();
+          }
+        }),
+      vim(), basicSetup, css(), birdsOfParadise],
     parent: parentNode
   });
 }
