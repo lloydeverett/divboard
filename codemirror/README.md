@@ -15,4 +15,6 @@ npm install --global rollup @rollup/plugin-terser
 rollup ./src/codemirror-init.js --file ./build/codemirror-init.js --format iife --plugin @rollup/plugin-terser --output.name codemirror
 ```
 
-Note that the [ThemeMirror](https://thememirror.net/) sources are also included here to help us style the editors.
+Also included in the sources directory:
+ - The [ThemeMirror](https://thememirror.net/) sources to help us style the editors.
+ - The [codemirror-vim](https://github.com/replit/codemirror-vim) sources to add support for vim-style bindings.

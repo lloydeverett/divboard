@@ -304,3 +304,12 @@ div[contenteditable="true"] {
     font-size: 0.85em;
     background-color: #b26487;
 }
+
+.markup .cm-editor .cm-cursorLayer, .markup .cm-editor .cm-cursorLayer .cm-fat-cursor {
+    outline-color: #71717150;
+    background-color: #71717150;
+}
+.cm-editor .cm-cursorLayer, .cm-editor .cm-cursorLayer .cm-fat-cursor {
+    outline-color: #c5c5c580;
+    background-color: #c5c5c580;
+}
