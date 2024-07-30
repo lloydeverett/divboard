@@ -2,7 +2,7 @@
 body {
     display: flex;
     flex-direction: column;
-    font-size: 12px;
+    font-size: 13px;
     margin: 0;
     padding: 0;
     font-weight: 500;
@@ -117,7 +117,7 @@ body {
     background-color: #242a25;
 }
 .src .titlebar {
-    background-color: #286b4d;
+    background-color: #256145;
     color: #ebdbb2;
 }
 .src .cm-editor .cm-gutters {
@@ -128,11 +128,11 @@ body {
     background: #4a93664c;
 }
 .src .cm-editor .cm-gutter .cm-activeLineGutter, .src .cm-editor .cm-activeLine {
-    background-color: rgba(0, 107, 96, 0.22);
+    background-color: rgba(0, 124, 111, 0.22);
 }
 
 .css .titlebar {
-    background-color: #8b3d22;
+    background-color: #7c361f;
     color: #ebdbb2;
 }
 .css .cm-editor .cm-gutters {
@@ -140,7 +140,7 @@ body {
     color: #ebdbb2;
 }
 .css .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
-    background: #a950144c;
+    background: #a96b144c;
 }
 .css .cm-editor .cm-gutter .cm-activeLineGutter, .css .cm-editor .cm-activeLine {
     background-color: rgba(109, 91, 0, 0.22);
