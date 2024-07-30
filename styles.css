@@ -231,17 +231,23 @@ div[contenteditable="true"] {
     font-size: 0.9em;
     opacity: 0.0;
 }
-.button:hover {
-    background: #3b3b3b36;
+.markup .button:hover {
+    background: #6c6c6c36;
 }
-.button:active {
-    background: #3b3b3b58;
+.markup .button:active {
+    background: #00000036;
 }
-.button.button-selected {
-    background: #efd796;
+.src .button:hover, .css .button:hover {
+    background: #0f0f0f36;
 }
-.src .button-selected {
-    background: #437d59;
+.src .button:active, .css .button:active {
+    background: #0000004f;
+}
+.markup .button-selected, .markup .button-selected.button:hover {
+    background: #f1deaa;
+}
+.src .button-selected, .src .button-selected.button:hover, .css .button-selected, .css .button-selected.button:hover {
+    background: #417b58;
 }
 
 .menubar {
@@ -268,16 +274,10 @@ div[contenteditable="true"] {
     font-size: 1em;
 }
 .menubar .button:hover {
-    background: #0000006e;
+    background: #00000060;
 }
 .menubar .button:active {
     background: #0000007e;
-}
-.markup .menubar .button:hover {
-    background: #00000012;
-}
-.markup .menubar .button:active {
-    background: #0000001f;
 }
 .menubar-start {
     justify-content: flex-start;
@@ -306,10 +306,10 @@ div[contenteditable="true"] {
 }
 
 .markup .cm-editor .cm-cursorLayer, .markup .cm-editor .cm-cursorLayer .cm-fat-cursor {
-    outline-color: #71717150;
-    background-color: #71717150;
+    outline-color: #1b1b1b50;
+    background-color: #1b1b1b50;
 }
 .cm-editor .cm-cursorLayer, .cm-editor .cm-cursorLayer .cm-fat-cursor {
-    outline-color: #c5c5c580;
-    background-color: #c5c5c580;
+    outline-color: #ffffff80;
+    background-color: #ffffff80;
 }
