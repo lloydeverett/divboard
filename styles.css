@@ -110,7 +110,7 @@ body {
     background: #eddcb3;
 }
 .markup .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
-    background: #40727f56;
+    background: #7f6f404d;
 }
 
 .src .cm-editor {
@@ -140,7 +140,7 @@ body {
     color: #ebdbb2;
 }
 .css .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
-    background: #a96b144c;
+    background: #a96b1436;
 }
 .css .cm-editor .cm-gutter .cm-activeLineGutter, .css .cm-editor .cm-activeLine {
     background-color: rgba(109, 91, 0, 0.22);
@@ -306,10 +306,20 @@ div[contenteditable="true"] {
 }
 
 .markup .cm-editor .cm-cursorLayer, .markup .cm-editor .cm-cursorLayer .cm-fat-cursor {
-    outline-color: #1b1b1b50;
-    background-color: #1b1b1b50;
+    outline-color: #1b1b1b2f;
+    background-color: #1b1b1b2f;
 }
-.cm-editor .cm-cursorLayer, .cm-editor .cm-cursorLayer .cm-fat-cursor {
-    outline-color: #ffffff80;
-    background-color: #ffffff80;
+.markup .cm-editor.cm-focused .cm-cursorLayer, .markup .cm-editor.cm-focused .cm-cursorLayer .cm-fat-cursor {
+    outline-color: #1b1b1b5f;
+    background-color: #1b1b1b5f;
+}
+.src .cm-editor .cm-cursorLayer, .src .cm-editor .cm-cursorLayer .cm-fat-cursor,
+.css .cm-editor .cm-cursorLayer, .css .cm-editor .cm-cursorLayer .cm-fat-cursor {
+    outline-color: #ebdbb22d;
+    background-color: #ebdbb22d;
+}
+.src .cm-editor.cm-focused .cm-cursorLayer, .src .cm-editor.cm-focused .cm-cursorLayer .cm-fat-cursor,
+.css .cm-editor.cm-focused .cm-cursorLayer, .css .cm-editor.cm-focused .cm-cursorLayer .cm-fat-cursor {
+    outline-color: #ebdbb2d5;
+    background-color: #ebdbb2d5;
 }
