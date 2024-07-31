@@ -109,8 +109,11 @@ body {
 .markup .cm-editor .cm-gutters {
     background: #eddcb3;
 }
+.src .cm-editor .cm-gutter .cm-activeLineGutter, .src .cm-editor .cm-activeLine {
+    background-color: rgba(0, 124, 111, 0.8);
+}
 .markup .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
-    background: #7f6f404d;
+    background-color: rgba(163, 118, 34, 0.13);
 }
 
 .src .cm-editor {
@@ -124,11 +127,11 @@ body {
     background-color: #303a32;
     color: #ebdbb2;
 }
-.src .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
-    background: #4a93664c;
-}
 .src .cm-editor .cm-gutter .cm-activeLineGutter, .src .cm-editor .cm-activeLine {
     background-color: rgba(0, 124, 111, 0.22);
+}
+.css .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
+    background-color: rgb(229, 216, 170);
 }
 
 .css .titlebar {
@@ -140,7 +143,7 @@ body {
     color: #ebdbb2;
 }
 .css .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
-    background: #a96b1436;
+    background-color: rgba(78, 48, 40, 1);
 }
 .css .cm-editor .cm-gutter .cm-activeLineGutter, .css .cm-editor .cm-activeLine {
     background-color: rgba(109, 91, 0, 0.22);
