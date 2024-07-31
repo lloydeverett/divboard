@@ -7,7 +7,7 @@ export const gruvboxLight = createTheme({
     settings: {
         background: '#fbf1c7',
         foreground: '#3c3836',
-        caret: '#af3a03',
+        caret: '#3c3836',
         selection: '#bdae9391',
         selectionMatch: '#bdae9391',
         lineHighlight: '#a37f2238',

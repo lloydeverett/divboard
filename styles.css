@@ -13,7 +13,7 @@ body {
     font-style: normal;
     font-variation-settings:
       "slnt" 0;
-    background: #2c2c2c;
+    background-color: #232323;
     overflow: hidden;
     height: 100vh;
 }
@@ -88,13 +88,13 @@ body {
 }
 
 .output {
-    background-color: #665c54;
+    background-color: #473f3a;
     font-family: "Inter";
     font-weight: 400;
     margin-top: var(--titlebar-height);
 }
 .output .titlebar {
-    background-color: #504945;
+    background-color: #38312b;
     color: #ebdbb2;
 }
 
