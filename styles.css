@@ -306,8 +306,8 @@ div[contenteditable="true"] {
 }
 
 .markup .cm-editor .cm-cursorLayer, .markup .cm-editor .cm-cursorLayer .cm-fat-cursor {
-    outline-color: #1b1b1b2f;
-    background-color: #1b1b1b2f;
+    outline-color: #1b1b1b32;
+    background-color: #1b1b1b32;
 }
 .markup .cm-editor.cm-focused .cm-cursorLayer, .markup .cm-editor.cm-focused .cm-cursorLayer .cm-fat-cursor {
     outline-color: #1b1b1b5f;
