@@ -277,7 +277,7 @@ div[contenteditable="true"] {
     font-size: 1em;
 }
 .menubar .button:hover {
-    background: #00000060;
+    background: #00000046;
 }
 .menubar .button:active {
     background: #0000007e;
