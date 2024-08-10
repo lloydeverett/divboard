@@ -8,10 +8,11 @@ document.documentElement.style.setProperty('--titlebar-height-negative', `-${TIT
 
 // storage getters and setters (wrapped in functions so we can change the storage backend or easily disable)
 function storageGet(key) {
-    return window.localStorage.getItem(key);
+    return '';
+    // return window.localStorage.getItem(key);
 }
 function storageSet(key, value) {
-    return window.localStorage.setItem(key, value);
+    // return window.localStorage.setItem(key, value);
 }
 
 // grab data from storage
