@@ -6,15 +6,24 @@ const TITLEBAR_HEIGHT = 22;
 document.documentElement.style.setProperty('--titlebar-height', `${TITLEBAR_HEIGHT}px`);
 document.documentElement.style.setProperty('--titlebar-height-negative', `-${TITLEBAR_HEIGHT}px`);
 
-let storedMarkup = window.localStorage.getItem('markup');
+// storage getters and setters (wrapped in functions so we can change the storage backend or easily disable)
+function storageGet(key) {
+    return window.localStorage.getItem(key);
+}
+function storageSet(key, value) {
+    return window.localStorage.setItem(key, value);
+}
+
+// grab data from storage
+let storedMarkup = storageGet('markup');
 if (typeof storedMarkup === 'undefined') {
     storedMarkup = '';
 }
-let storedSrc = window.localStorage.getItem('src');
+let storedSrc = storageGet('src');
 if (typeof storedSrc === 'undefined') {
     storedSrc = '';
 }
-let storedCss = window.localStorage.getItem('css');
+let storedCss = storageGet('css');
 if (typeof storedCss === 'undefined') {
     storedCss = '';
 }
@@ -25,10 +34,10 @@ const markupEditor = editor.createMarkupEditor(storedMarkup, $('#markup-edit')[0
     renderMarkup();
 });
 const srcEditor = editor.createSrcEditor(storedSrc, $('#src-edit')[0], function() {
-    window.localStorage.setItem('src', srcEditor.state.doc.toString());
+    storageSet('src', srcEditor.state.doc.toString());
 });
 const cssEditor = editor.createCssEditor(storedCss, $('#css-edit')[0], function () {
-    window.localStorage.setItem('css', cssEditor.state.doc.toString());
+    storageSet('css', cssEditor.state.doc.toString());
     applyStyles();
 });
 
@@ -85,7 +94,7 @@ $(window).on("resize", function(event) {
 
 // define function for saving markup
 function saveMarkup() {
-    window.localStorage.setItem('markup', markupEditor.state.doc.toString());
+    storageSet.setItem('markup', markupEditor.state.doc.toString());
 }
 
 // rendering of input markup to divboard
