@@ -95,7 +95,7 @@ $(window).on("resize", function(event) {
 
 // define function for saving markup
 function saveMarkup() {
-    storageSet.setItem('markup', markupEditor.state.doc.toString());
+    storageSet('markup', markupEditor.state.doc.toString());
 }
 
 // rendering of input markup to divboard
