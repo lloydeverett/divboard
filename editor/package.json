@@ -1,0 +1,20 @@
+{
+  "name": "editor",
+  "version": "1.0.0",
+  "dependencies": {
+    "@codemirror/lang-css": "^6.2.1",
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@replit/codemirror-vim": "^6.2.1",
+    "codemirror": "^6.0.1",
+    "y-codemirror.next": "^0.3.5"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.20.0"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/rollup -c"
+  }
+}

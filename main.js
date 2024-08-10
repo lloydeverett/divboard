@@ -20,14 +20,14 @@ if (typeof storedCss === 'undefined') {
 }
 
 // CodeMirror editor setup
-const markupEditor = codemirror.createMarkupEditor(storedMarkup, $('#markup-edit')[0], function() {
+const markupEditor = editor.createMarkupEditor(storedMarkup, $('#markup-edit')[0], function() {
     saveMarkup();
     renderMarkup();
 });
-const srcEditor = codemirror.createSrcEditor(storedSrc, $('#src-edit')[0], function() {
+const srcEditor = editor.createSrcEditor(storedSrc, $('#src-edit')[0], function() {
     window.localStorage.setItem('src', srcEditor.state.doc.toString());
 });
-const cssEditor = codemirror.createCssEditor(storedCss, $('#css-edit')[0], function () {
+const cssEditor = editor.createCssEditor(storedCss, $('#css-edit')[0], function () {
     window.localStorage.setItem('css', cssEditor.state.doc.toString());
     applyStyles();
 });
