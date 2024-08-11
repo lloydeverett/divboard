@@ -16,28 +16,28 @@ function storageSet(key, value) {
 }
 
 // grab data from storage
-let storedMarkup = storageGet('markup');
-if (typeof storedMarkup === 'undefined') {
-    storedMarkup = '';
-}
-let storedSrc = storageGet('src');
-if (typeof storedSrc === 'undefined') {
-    storedSrc = '';
-}
-let storedCss = storageGet('css');
-if (typeof storedCss === 'undefined') {
-    storedCss = '';
-}
+// let storedMarkup = storageGet('markup');
+// if (typeof storedMarkup === 'undefined') {
+//     storedMarkup = '';
+// }
+// let storedSrc = storageGet('src');
+// if (typeof storedSrc === 'undefined') {
+//     storedSrc = '';
+// }
+// let storedCss = storageGet('css');
+// if (typeof storedCss === 'undefined') {
+//     storedCss = '';
+// }
 
 // CodeMirror editor setup
-const markupEditor = editor.createMarkupEditor(storedMarkup, $('#markup-edit')[0], function() {
+const markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function() {
     saveMarkup();
     renderMarkup();
 });
-const srcEditor = editor.createSrcEditor(storedSrc, $('#src-edit')[0], function() {
+const srcEditor = editor.createSrcEditor($('#src-edit')[0], function() {
     storageSet('src', srcEditor.state.doc.toString());
 });
-const cssEditor = editor.createCssEditor(storedCss, $('#css-edit')[0], function () {
+const cssEditor = editor.createCssEditor($('#css-edit')[0], function () {
     storageSet('css', cssEditor.state.doc.toString());
     applyStyles();
 });

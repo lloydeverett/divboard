@@ -40,9 +40,9 @@ provider.awareness.setLocalStateField('user', {
   colorLight: userColor.light
 });
 
-export function createMarkupEditor(content, parentNode, onDocChanged) {
+export function createMarkupEditor(parentNode, onDocChanged) {
   return new EditorView({
-    doc: content,
+    doc: yMarkup.toString(),
     extensions: [
       EditorView.updateListener.of(
         function (e) {
@@ -57,9 +57,9 @@ export function createMarkupEditor(content, parentNode, onDocChanged) {
   });
 }
 
-export function createSrcEditor(content, parentNode, onDocChanged) {
+export function createSrcEditor(parentNode, onDocChanged) {
   return new EditorView({
-    doc: content,
+    doc: ySrc.toString(),
     extensions: [
       EditorView.updateListener.of(
         function (e) {
@@ -74,9 +74,9 @@ export function createSrcEditor(content, parentNode, onDocChanged) {
   });
 }
 
-export function createCssEditor(content, parentNode, onDocChanged) {
+export function createCssEditor(parentNode, onDocChanged) {
   return new EditorView({
-    doc: content,
+    doc: yCss.toString(),
     extensions: [
       EditorView.updateListener.of(
         function (e) {
