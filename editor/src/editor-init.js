@@ -9,6 +9,37 @@ import { birdsOfParadise } from "./themes/birds-of-paradise.js";
 import { gruvboxDark } from "./themes/gruvbox-dark.js";
 import { gruvboxLight } from "./themes/gruvbox-light.js";
 
+import * as Y from 'yjs'
+import { yCollab } from 'y-codemirror.next'
+import { WebrtcProvider } from 'y-webrtc'
+import * as random from 'lib0/random'
+
+const userColors = [
+  { color: '#30bced', light: '#30bced33' },
+  { color: '#6eeb83', light: '#6eeb8333' },
+  { color: '#ffbc42', light: '#ffbc4233' },
+  { color: '#ecd444', light: '#ecd44433' },
+  { color: '#ee6352', light: '#ee635233' },
+  { color: '#9ac2c9', light: '#9ac2c933' },
+  { color: '#8acb88', light: '#8acb8833' },
+  { color: '#1be7ff', light: '#1be7ff33' }
+];
+const userColor = userColors[random.uint32() % userColors.length];
+const yDoc = new Y.Doc();
+const provider = new WebrtcProvider('hxcFx9mqHlGQ1RUuqFXgBIG4i89p93xp', yDoc);
+const yMarkup = yDoc.getText('markup');
+const ySrc = yDoc.getText('src');
+const yCss = yDoc.getText('css');
+const yMarkupUndoManager = new Y.UndoManager(yMarkup);
+const ySrcUndoManager = new Y.UndoManager(ySrc);
+const yCssUndoManager = new Y.UndoManager(yCss);
+
+provider.awareness.setLocalStateField('user', {
+  name: 'Anonymous ' + Math.floor(Math.random() * 100),
+  color: userColor.color,
+  colorLight: userColor.light
+});
+
 export function createMarkupEditor(content, parentNode, onDocChanged) {
   return new EditorView({
     doc: content,
@@ -19,7 +50,9 @@ export function createMarkupEditor(content, parentNode, onDocChanged) {
             onDocChanged();
           }
         }),
-      vim(), basicSetup, keymap.of([indentWithTab]), html(), gruvboxLight],
+        yCollab(yMarkup, provider.awareness, { yMarkupUndoManager }),
+        vim(), basicSetup, keymap.of([indentWithTab]), html(), gruvboxLight
+      ],
     parent: parentNode
   });
 }
@@ -34,7 +67,9 @@ export function createSrcEditor(content, parentNode, onDocChanged) {
             onDocChanged();
           }
         }),
-      vim(), basicSetup, keymap.of([indentWithTab]), javascript(), gruvboxDark],
+        yCollab(ySrc, provider.awareness, { ySrcUndoManager }),
+        vim(), basicSetup, keymap.of([indentWithTab]), javascript(), gruvboxDark
+      ],
     parent: parentNode
   });
 }
@@ -49,7 +84,9 @@ export function createCssEditor(content, parentNode, onDocChanged) {
             onDocChanged();
           }
         }),
-      vim(), basicSetup, keymap.of([indentWithTab]), css(), birdsOfParadise],
+        yCollab(yCss, provider.awareness, { yCssUndoManager }),
+        vim(), basicSetup, keymap.of([indentWithTab]), css(), birdsOfParadise
+      ],
     parent: parentNode
   });
 }

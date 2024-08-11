@@ -108,7 +108,7 @@ renderMarkup();
 
 // applying input CSS to divboard
 function applyStyles() {
-    $('#divboard-input-styles').html($('#css-edit').text());
+    $('#divboard-input-styles').html(cssEditor.state.doc.toString());
 }
 applyStyles();
 

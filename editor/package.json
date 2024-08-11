@@ -7,9 +7,11 @@
     "@codemirror/lang-javascript": "^6.2.2",
     "@replit/codemirror-vim": "^6.2.1",
     "codemirror": "^6.0.1",
-    "y-codemirror.next": "^0.3.5"
+    "y-codemirror.next": "^0.3.5",
+    "y-webrtc": "^10.3.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "rollup": "^4.20.0"
