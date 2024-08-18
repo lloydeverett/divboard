@@ -8,11 +8,13 @@ import { indentWithTab } from "@codemirror/commands"
 import { birdsOfParadise } from "./themes/birds-of-paradise.js";
 import { gruvboxDark } from "./themes/gruvbox-dark.js";
 import { gruvboxLight } from "./themes/gruvbox-light.js";
+import * as Y from 'yjs';
+import { yCollab } from 'y-codemirror.next';
+import { getOrCreateDocAndToken } from '@y-sweet/sdk';
+import { createYjsProvider } from '@y-sweet/client';
+import * as random from 'lib0/random';
 
-import * as Y from 'yjs'
-import { yCollab } from 'y-codemirror.next'
-import { WebrtcProvider } from 'y-webrtc'
-import * as random from 'lib0/random'
+const CONNECTION_STRING = "ys://127.0.0.1:8080";
 
 const userColors = [
   { color: '#30bced', light: '#30bced33' },
@@ -26,7 +28,6 @@ const userColors = [
 ];
 const userColor = userColors[random.uint32() % userColors.length];
 const yDoc = new Y.Doc();
-const provider = new WebrtcProvider('hxcFx9mqHlGQ1RUuqFXgBIG4i89p93xp', yDoc);
 const yMarkup = yDoc.getText('markup');
 const ySrc = yDoc.getText('src');
 const yCss = yDoc.getText('css');
@@ -34,13 +35,25 @@ const yMarkupUndoManager = new Y.UndoManager(yMarkup);
 const ySrcUndoManager = new Y.UndoManager(ySrc);
 const yCssUndoManager = new Y.UndoManager(yCss);
 
-provider.awareness.setLocalStateField('user', {
-  name: 'Anonymous ' + Math.floor(Math.random() * 100),
-  color: userColor.color,
-  colorLight: userColor.light
-});
+let provider;
+let didInit = false;
+
+export async function init() {
+  // normally client tokens would be requested from a trusted server, but currently this is just localhost with no auth anyway so whatever
+  const clientToken = await getOrCreateDocAndToken(CONNECTION_STRING, 'hxcFx9mqHlGQ1RUuqFXgBIG4i89p93xp');
+  provider = createYjsProvider(yDoc, clientToken, { disableBc: true });
+
+  provider.awareness.setLocalStateField('user', {
+    name: 'Anonymous ' + Math.floor(Math.random() * 100),
+    color: userColor.color,
+    colorLight: userColor.light
+  });
+
+  didInit = true;
+}
 
 export function createMarkupEditor(parentNode, onDocChanged) {
+  if (!didInit) { throw new Error("Expected init() function to have been called and completed first."); }
   return new EditorView({
     doc: yMarkup.toString(),
     extensions: [
@@ -58,6 +71,7 @@ export function createMarkupEditor(parentNode, onDocChanged) {
 }
 
 export function createSrcEditor(parentNode, onDocChanged) {
+  if (!didInit) { throw new Error("Expected init() function to have been called and completed first."); }
   return new EditorView({
     doc: ySrc.toString(),
     extensions: [
@@ -75,6 +89,7 @@ export function createSrcEditor(parentNode, onDocChanged) {
 }
 
 export function createCssEditor(parentNode, onDocChanged) {
+  if (!didInit) { throw new Error("Expected init() function to have been called and completed first."); }
   return new EditorView({
     doc: yCss.toString(),
     extensions: [

@@ -6,9 +6,10 @@
     "@codemirror/lang-html": "^6.4.9",
     "@codemirror/lang-javascript": "^6.2.2",
     "@replit/codemirror-vim": "^6.2.1",
+    "@y-sweet/client": "^0.2.1",
+    "@y-sweet/sdk": "^0.2.1",
     "codemirror": "^6.0.1",
-    "y-codemirror.next": "^0.3.5",
-    "y-webrtc": "^10.3.0"
+    "y-codemirror.next": "^0.3.5"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^26.0.1",

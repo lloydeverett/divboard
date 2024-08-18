@@ -30,16 +30,39 @@ function storageSet(key, value) {
 // }
 
 // CodeMirror editor setup
-const markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function() {
-    saveMarkup();
-    renderMarkup();
-});
-const srcEditor = editor.createSrcEditor($('#src-edit')[0], function() {
-    storageSet('src', srcEditor.state.doc.toString());
-});
-const cssEditor = editor.createCssEditor($('#css-edit')[0], function () {
-    storageSet('css', cssEditor.state.doc.toString());
+editor.init().then(() => {
+    let markupEditor;
+    let srcEditor;
+    let cssEditor;
+
+    // applying input CSS to divboard
+    function applyStyles() {
+        $('#divboard-input-styles').html(cssEditor.state.doc.toString());
+    }
+
+    markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function() {
+        storageSet('markup', markupEditor.state.doc.toString());
+        renderMarkup();
+    });
+    srcEditor = editor.createSrcEditor($('#src-edit')[0], function() {
+        storageSet('src', srcEditor.state.doc.toString());
+    });
+    cssEditor = editor.createCssEditor($('#css-edit')[0], function () {
+        storageSet('css', cssEditor.state.doc.toString());
+        applyStyles();
+    });
+
     applyStyles();
+
+    // mutation observer to update markup according to divboard changes
+    new MutationObserver(function(m) {
+        if ($('#divboard-container').html() !== blessedInnerHtml) {
+            // $('#markup-edit').text(html_beautify($('#divboard-container').html()));
+            storageSet('markup', markupEditor.state.doc.toString());
+        }
+    }).observe($('#divboard-container')[0], {
+        characterData: true, attributes: true, childList: true, subtree: true
+    });
 });
 
 // handle viewport width changes, and put divboard container elem in the right place
@@ -93,11 +116,6 @@ $(window).on("resize", function(event) {
     onViewportWidthChanged();
 });
 
-// define function for saving markup
-function saveMarkup() {
-    storageSet('markup', markupEditor.state.doc.toString());
-}
-
 // rendering of input markup to divboard
 let blessedInnerHtml; // "bless" known innerHtml so we don't later think this is a DOM mutation
 function renderMarkup() {
@@ -105,22 +123,6 @@ function renderMarkup() {
     // blessedInnerHtml = $('#divboard-container').html();
 }
 renderMarkup();
-
-// applying input CSS to divboard
-function applyStyles() {
-    $('#divboard-input-styles').html(cssEditor.state.doc.toString());
-}
-applyStyles();
-
-// mutation observer to update markup according to divboard changes
-new MutationObserver(function(m) {
-    if ($('#divboard-container').html() !== blessedInnerHtml) {
-        // $('#markup-edit').text(html_beautify($('#divboard-container').html()));
-        saveMarkup();
-    }
-}).observe($('#divboard-container')[0], {
-    characterData: true, attributes: true, childList: true, subtree: true
-});
 
 // button group implementation
 $('.button-group > .button').click(function (event) {
