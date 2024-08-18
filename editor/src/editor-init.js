@@ -52,10 +52,10 @@ export async function init() {
   didInit = true;
 }
 
-export function createMarkupEditor(parentNode, onDocChanged) {
-  if (!didInit) { throw new Error("Expected init() function to have been called and completed first."); }
+function createEditor(yText, yUndoManager, extraExtensions, parentNode, onDocChanged) {
+  if (!didInit) { throw new Error("Expected init() function to have been called and completed before creating CodeMirror editor."); }
   return new EditorView({
-    doc: yMarkup.toString(),
+    doc: yText.toString(),
     extensions: [
       EditorView.updateListener.of(
         function (e) {
@@ -63,45 +63,21 @@ export function createMarkupEditor(parentNode, onDocChanged) {
             onDocChanged();
           }
         }),
-        yCollab(yMarkup, provider.awareness, { yMarkupUndoManager }),
-        vim(), basicSetup, keymap.of([indentWithTab]), html(), gruvboxLight
+        yCollab(yText, provider.awareness, { yUndoManager }),
+        vim(), basicSetup, keymap.of([indentWithTab]), ...extraExtensions
       ],
     parent: parentNode
   });
+}
+
+export function createMarkupEditor(parentNode, onDocChanged) {
+  return createEditor(yMarkup, yMarkupUndoManager, [html(), gruvboxLight], parentNode, onDocChanged);
 }
 
 export function createSrcEditor(parentNode, onDocChanged) {
-  if (!didInit) { throw new Error("Expected init() function to have been called and completed first."); }
-  return new EditorView({
-    doc: ySrc.toString(),
-    extensions: [
-      EditorView.updateListener.of(
-        function (e) {
-          if (e.docChanged) {
-            onDocChanged();
-          }
-        }),
-        yCollab(ySrc, provider.awareness, { ySrcUndoManager }),
-        vim(), basicSetup, keymap.of([indentWithTab]), javascript(), gruvboxDark
-      ],
-    parent: parentNode
-  });
+  return createEditor(ySrc, ySrcUndoManager, [javascript(), gruvboxDark], parentNode, onDocChanged);
 }
 
 export function createCssEditor(parentNode, onDocChanged) {
-  if (!didInit) { throw new Error("Expected init() function to have been called and completed first."); }
-  return new EditorView({
-    doc: yCss.toString(),
-    extensions: [
-      EditorView.updateListener.of(
-        function (e) {
-          if (e.docChanged) {
-            onDocChanged();
-          }
-        }),
-        yCollab(yCss, provider.awareness, { yCssUndoManager }),
-        vim(), basicSetup, keymap.of([indentWithTab]), css(), birdsOfParadise
-      ],
-    parent: parentNode
-  });
+  return createEditor(yCss, yCssUndoManager, [css(), birdsOfParadise], parentNode, onDocChanged);
 }
