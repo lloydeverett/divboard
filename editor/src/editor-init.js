@@ -14,7 +14,8 @@ import { getOrCreateDocAndToken } from '@y-sweet/sdk';
 import { createYjsProvider } from '@y-sweet/client';
 import * as random from 'lib0/random';
 
-const CONNECTION_STRING = "ys://127.0.0.1:8080";
+const HTTP_CONNECTION_STRING = "https://opportunity.lloydeverett.com/y-sweet/";
+const WS_CONNECTION_STRING = "wss://opportunity.lloydeverett.com/y-sweet/";
 
 const userColors = [
   { color: '#30bced', light: '#30bced33' },
@@ -39,8 +40,8 @@ let provider;
 let didInit = false;
 
 export async function init() {
-  // normally client tokens would be requested from a trusted server, but currently this is just localhost with no auth anyway so whatever
-  const clientToken = await getOrCreateDocAndToken(CONNECTION_STRING, 'hxcFx9mqHlGQ1RUuqFXgBIG4i89p93xp');
+  const clientToken = await getOrCreateDocAndToken(HTTP_CONNECTION_STRING, 'hxcFx9mqHlGQ1RUuqFXgBIG4i89p93xp');
+  clientToken.url = clientToken.url.replace(/^ws:\/\/.*?\//, WS_CONNECTION_STRING);
   provider = createYjsProvider(yDoc, clientToken, { disableBc: true });
 
   provider.awareness.setLocalStateField('user', {
