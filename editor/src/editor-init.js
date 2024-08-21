@@ -14,8 +14,8 @@ import { getOrCreateDocAndToken } from '@y-sweet/sdk';
 import { createYjsProvider } from '@y-sweet/client';
 import * as random from 'lib0/random';
 
-const HTTP_CONNECTION_STRING = "https://opportunity.lloydeverett.com/y-sweet/";
-const WS_CONNECTION_STRING = "wss://opportunity.lloydeverett.com/y-sweet/";
+const HTTP_CONNECTION_STRING = "https://alpha.divboard.app/y-sweet/";
+const WS_CONNECTION_STRING = "wss://alpha.divboard.app/y-sweet/";
 
 const userColors = [
   { color: '#30bced', light: '#30bced33' },
