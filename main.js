@@ -30,7 +30,13 @@ function storageSet(key, value) {
 // }
 
 // CodeMirror editor setup
-editor.init().then(() => {
+const urlParams = new URLSearchParams(window.location.search);
+if (!urlParams.has('doc')) {
+    urlParams.set('doc', 'index');
+    window.location.search = urlParams;
+}
+const docId = urlParams.get('doc');
+editor.init(docId).then(() => {
     let markupEditor;
     let srcEditor;
     let cssEditor;

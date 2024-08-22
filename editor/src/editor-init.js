@@ -39,8 +39,8 @@ const yCssUndoManager = new Y.UndoManager(yCss);
 let provider;
 let didInit = false;
 
-export async function init() {
-  const clientToken = await getOrCreateDocAndToken(HTTP_CONNECTION_STRING, 'hxcFx9mqHlGQ1RUuqFXgBIG4i89p93xp');
+export async function init(docId) {
+  const clientToken = await getOrCreateDocAndToken(HTTP_CONNECTION_STRING, docId);
   clientToken.url = clientToken.url.replace(/^ws:\/\/.*?\//, WS_CONNECTION_STRING);
   provider = createYjsProvider(yDoc, clientToken, { disableBc: true });
 
