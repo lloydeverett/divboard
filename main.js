@@ -6,29 +6,6 @@ const TITLEBAR_HEIGHT = 22;
 document.documentElement.style.setProperty('--titlebar-height', `${TITLEBAR_HEIGHT}px`);
 document.documentElement.style.setProperty('--titlebar-height-negative', `-${TITLEBAR_HEIGHT}px`);
 
-// storage getters and setters (wrapped in functions so we can change the storage backend or easily disable)
-function storageGet(key) {
-    return '';
-    // return window.localStorage.getItem(key);
-}
-function storageSet(key, value) {
-    // return window.localStorage.setItem(key, value);
-}
-
-// grab data from storage
-// let storedMarkup = storageGet('markup');
-// if (typeof storedMarkup === 'undefined') {
-//     storedMarkup = '';
-// }
-// let storedSrc = storageGet('src');
-// if (typeof storedSrc === 'undefined') {
-//     storedSrc = '';
-// }
-// let storedCss = storageGet('css');
-// if (typeof storedCss === 'undefined') {
-//     storedCss = '';
-// }
-
 // CodeMirror editor + markup rendering
 const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has('doc')) {
@@ -47,14 +24,11 @@ editor.init(docId).then(() => {
     }
 
     markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function() {
-        storageSet('markup', markupEditor.state.doc.toString());
         renderMarkup();
     });
     srcEditor = editor.createSrcEditor($('#src-edit')[0], function() {
-        storageSet('src', srcEditor.state.doc.toString());
     });
-    cssEditor = editor.createCssEditor($('#css-edit')[0], function () {
-        storageSet('css', cssEditor.state.doc.toString());
+    cssEditor = editor.createCssEditor($('#css-edit')[0], function() {
         applyStyles();
     });
 
@@ -64,7 +38,6 @@ editor.init(docId).then(() => {
     new MutationObserver(function(m) {
         if ($('#divboard-container').html() !== blessedInnerHtml) {
             // $('#markup-edit').text(html_beautify($('#divboard-container').html()));
-            storageSet('markup', markupEditor.state.doc.toString());
         }
     }).observe($('#divboard-container')[0], {
         characterData: true, attributes: true, childList: true, subtree: true
