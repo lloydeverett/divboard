@@ -29,7 +29,7 @@ function storageSet(key, value) {
 //     storedCss = '';
 // }
 
-// CodeMirror editor setup
+// CodeMirror editor + markup rendering
 const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has('doc')) {
     urlParams.set('doc', 'index');
@@ -69,6 +69,14 @@ editor.init(docId).then(() => {
     }).observe($('#divboard-container')[0], {
         characterData: true, attributes: true, childList: true, subtree: true
     });
+
+    // rendering of input markup to divboard
+    let blessedInnerHtml; // "bless" known innerHtml so we don't later think this is a DOM mutation
+    function renderMarkup() {
+        $('#divboard-container').html(markupEditor.state.doc.toString());
+        blessedInnerHtml = $('#divboard-container').html();
+    }
+    renderMarkup();
 });
 
 // handle viewport width changes, and put divboard container elem in the right place
@@ -121,14 +129,6 @@ onViewportWidthChanged();
 $(window).on("resize", function(event) {
     onViewportWidthChanged();
 });
-
-// rendering of input markup to divboard
-let blessedInnerHtml; // "bless" known innerHtml so we don't later think this is a DOM mutation
-function renderMarkup() {
-    // $('#divboard-container').html($('#markup-edit').text());
-    // blessedInnerHtml = $('#divboard-container').html();
-}
-renderMarkup();
 
 // button group implementation
 $('.button-group > .button').click(function (event) {
