@@ -14,6 +14,8 @@ import { getOrCreateDocAndToken } from '@y-sweet/sdk';
 import { createYjsProvider } from '@y-sweet/client';
 import * as random from 'lib0/random';
 
+const isFileUrl = window.location.protocol === 'file:';
+
 const HTTP_CONNECTION_STRING = "https://alpha.divboard.app/y-sweet/";
 const WS_CONNECTION_STRING = "wss://alpha.divboard.app/y-sweet/";
 
@@ -40,15 +42,17 @@ let provider;
 let didInit = false;
 
 export async function init(docId) {
-  const clientToken = await getOrCreateDocAndToken(HTTP_CONNECTION_STRING, docId);
-  clientToken.url = clientToken.url.replace(/^ws:\/\/.*?\//, WS_CONNECTION_STRING);
-  provider = createYjsProvider(yDoc, clientToken, { disableBc: true });
+  if (!isFileUrl) {
+    const clientToken = await getOrCreateDocAndToken(HTTP_CONNECTION_STRING, docId);
+    clientToken.url = clientToken.url.replace(/^ws:\/\/.*?\//, WS_CONNECTION_STRING);
+    provider = createYjsProvider(yDoc, clientToken, { disableBc: true });
 
-  provider.awareness.setLocalStateField('user', {
-    name: 'Anonymous ' + Math.floor(Math.random() * 100),
-    color: userColor.color,
-    colorLight: userColor.light
-  });
+    provider.awareness.setLocalStateField('user', {
+      name: 'Anonymous ' + Math.floor(Math.random() * 100),
+      color: userColor.color,
+      colorLight: userColor.light
+    });
+  }
 
   didInit = true;
 }
@@ -56,7 +60,7 @@ export async function init(docId) {
 function createEditor(yText, yUndoManager, extraExtensions, parentNode, onDocChanged) {
   if (!didInit) { throw new Error("Expected init() function to have been called and completed before creating CodeMirror editor."); }
   return new EditorView({
-    doc: yText.toString(),
+    doc: isFileUrl ? "" : yText.toString(),
     extensions: [
       EditorView.updateListener.of(
         function (e) {
@@ -64,7 +68,7 @@ function createEditor(yText, yUndoManager, extraExtensions, parentNode, onDocCha
             onDocChanged();
           }
         }),
-        yCollab(yText, provider.awareness, { yUndoManager }),
+        isFileUrl ? [] : yCollab(yText, provider.awareness, { yUndoManager }),
         vim(), basicSetup, keymap.of([indentWithTab]), ...extraExtensions
       ],
     parent: parentNode
