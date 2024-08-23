@@ -23,8 +23,13 @@ editor.init(docId).then(() => {
         $('#divboard-input-styles').html(cssEditor.state.doc.toString());
     }
 
+    let blessedRenderedHtml; // "bless" known rendered html so we don't later think this is a DOM mutation
+    let blessedEditorMarkupContent; // same thing in reverse, so we don't do a re-render when dispatching changes to the editor
+
     markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function() {
-        renderMarkup();
+        if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
+            renderMarkup();
+        }
     });
     srcEditor = editor.createSrcEditor($('#src-edit')[0], function() {
     });
@@ -36,18 +41,21 @@ editor.init(docId).then(() => {
 
     // mutation observer to update markup according to divboard changes
     new MutationObserver(function(m) {
-        if ($('#divboard-container').html() !== blessedInnerHtml) {
-            // $('#markup-edit').text(html_beautify($('#divboard-container').html()));
+        if ($('#divboard-container').html() !== blessedRenderedHtml) {
+            const content = html_beautify($('#divboard-container').html());
+            blessedEditorMarkupContent = content;
+            markupEditor.dispatch({
+                changes: {from: 0, to: markupEditor.state.doc.length, insert: content}
+            });
         }
     }).observe($('#divboard-container')[0], {
         characterData: true, attributes: true, childList: true, subtree: true
     });
 
     // rendering of input markup to divboard
-    let blessedInnerHtml; // "bless" known innerHtml so we don't later think this is a DOM mutation
     function renderMarkup() {
         $('#divboard-container').html(markupEditor.state.doc.toString());
-        blessedInnerHtml = $('#divboard-container').html();
+        blessedRenderedHtml = $('#divboard-container').html();
     }
     renderMarkup();
 });
