@@ -71,7 +71,7 @@ export function markupChangesForMutation(markup, mutation, markupRootId) {
 
     const path = getDomPath(mutation.target, markupRootId);
     if (path === null) {
-        // node detached from document, so nothing to do here; it's removal will be reflected
+        // node detached from document, so nothing to do here; its removal will be reflected
         // by a separate mutation
         return null;
     }
