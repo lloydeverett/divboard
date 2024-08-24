@@ -1,6 +1,11 @@
 import * as htmlparser2 from "htmlparser2";
 
 function getDomPath(el, rootId) {
+    // before constructing the path, look for the first parent that's actually an element
+    while (el.parentNode != null && !(el instanceof Element)) {
+        el = el.parentNode;
+    }
+
     const stack = [];
 
     while (el.parentNode != null) {
@@ -28,7 +33,8 @@ function getDomPath(el, rootId) {
         el = el.parentNode;
     }
 
-    throw new Error("Couldn't get DOM path for element: not a descendant of root element ID");
+    // ok, so we've traversed upward but never found our root element ID, suggesting that this node has been detached from the document
+    return null;
 }
 
 function followDomPathBestEffort(ast, path) {
@@ -63,8 +69,12 @@ export function markupChangesForMutation(markup, mutation, markupRootId) {
         withEndIndices: true
     });
 
-    const element = mutation.target instanceof Element ? mutation.target : mutation.target.parentElement;
-    const path = getDomPath(element, markupRootId);
+    const path = getDomPath(mutation.target, markupRootId);
+    if (path === null) {
+        // node detached from document, so nothing to do here; it's removal will be reflected
+        // by a separate mutation
+        return null;
+    }
 
     // do our best to find the corresponding element in the parsed markup
     const { astNode, pathFollowed } = followDomPathBestEffort(markupAst, path);

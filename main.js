@@ -43,10 +43,14 @@ editor.init(docId).then(() => {
     // mutation observer to update markup according to divboard changes
     new MutationObserver(function(m) {
         if ($('#divboard-container').html() !== blessedRenderedHtml) {
-            let markupStr = markupEditor.state.doc.toString();;
-            m.forEach(() => {
-                const { from, to, html } = parse.markupChangesForMutation(markupStr, m[0], 'divboard-container');
-                const markupChanges = { from: from, to: to, insert: html_beautify(html) };
+            let markupStr = markupEditor.state.doc.toString();
+            m.forEach((mutation) => {
+                const parseResult = parse.markupChangesForMutation(markupStr, mutation, 'divboard-container');
+                if (parseResult === null) {
+                    return;
+                }
+
+                const markupChanges = { from: parseResult.from, to: parseResult.to, insert: html_beautify(parseResult.html) };
 
                 const newContents = markupStr.slice(0, markupChanges.from) + markupChanges.insert + markupStr.slice(markupChanges.to);
 
