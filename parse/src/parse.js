@@ -20,9 +20,9 @@ function getDomPath(el, rootId) {
             if (el.id === rootId) {
                 return stack;
             }
-            stack.unshift([el.nodeName.toLowerCase(), el.id]);
+            stack.unshift({ nodeName: el.nodeName.toLowerCase(), id: el.id, element: el });
         } else {
-            stack.unshift([el.nodeName.toLowerCase(), sibIndex]);
+            stack.unshift({ nodeName: el.nodeName.toLowerCase(), index: sibIndex, element: el });
         }
 
         el = el.parentNode;
@@ -36,18 +36,17 @@ function followDomPathBestEffort(ast, path) {
 
     let i;
     for (i = 0; i < path.length; i++) {
-        const nodeName = path[i][0];
-        let filtered = node.childNodes.filter(n => n.name === nodeName);
+        let filtered = node.childNodes.filter(n => n.name === path[i].nodeName);
 
-        if (typeof path[i][1] === 'string') {
-            const id = path[i][1];
+        if ('id' in path[i]) {
+            const id = path[i].id;
             filtered = filtered.filter(n => n.id === id);
             if (filtered.length !== 1) {
                 break;
             }
             node = filtered[0];
         } else {
-            const index = path[i][1];
+            const index = path[i].index;
             if (index >= filtered.length) {
                 break;
             }
@@ -65,23 +64,13 @@ export function markupChangesForMutation(markup, mutation, markupRootId) {
     });
 
     const element = mutation.target instanceof Element ? mutation.target : mutation.target.parentElement;
-    const path = getDomPath(element, markupRootId); // slice to drop markup root ID
+    const path = getDomPath(element, markupRootId);
 
     // do our best to find the corresponding element in the parsed markup
     const { astNode, pathFollowed } = followDomPathBestEffort(markupAst, path);
-    if (astNode.id === markupRootId || astNode.startIndex === null || astNode.endIndex === null) {
+    if (pathFollowed.length === 0 || astNode.startIndex === null || astNode.endIndex === null) {
         return { from: 0, to: markup.length, html: document.getElementById(markupRootId).innerHTML };
     }
-
-    // following path is best effort, so we need to find the DOM element associated with the path we actually followed
-    let elementAtPathFollowed = element;
-    while (JSON.stringify(pathFollowed) !== JSON.stringify(getDomPath(elementAtPathFollowed, markupRootId))) {
-        if (elementAtPathFollowed.parentNode === null || elementAtPathFollowed.parentNode.id === markupRootId) {
-            // also accept life and replace the entire markup
-            return { from: 0, to: markup.length, html: document.getElementById(markupRootId).innerHTML };
-        }
-        elementAtPathFollowed = elementAtPathFollowed.parentNode;
-    }
-
+    const elementAtPathFollowed = pathFollowed[pathFollowed.length - 1].element;
     return { from: astNode.startIndex, to: astNode.endIndex + 1, html: elementAtPathFollowed.outerHTML };
 }
