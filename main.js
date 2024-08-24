@@ -23,13 +23,14 @@ editor.init(docId).then(() => {
         $('#divboard-input-styles').html(cssEditor.state.doc.toString());
     }
 
-    let blessedRenderedHtml; // "bless" known rendered html so we don't later think this is a DOM mutation
-    let blessedEditorMarkupContent; // same thing in reverse, so we don't do a re-render when dispatching changes to the editor
+    let blessedRenderedHtml = null; // "bless" known rendered html so we don't later think this is a DOM mutation
+    let blessedEditorMarkupContent = null; // same thing in reverse, so we don't do a re-render when dispatching changes to the editor
 
     markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function() {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
             renderMarkup();
         }
+        blessedEditorMarkupContent = null;
     });
     srcEditor = editor.createSrcEditor($('#src-edit')[0], function() {
     });
@@ -42,12 +43,23 @@ editor.init(docId).then(() => {
     // mutation observer to update markup according to divboard changes
     new MutationObserver(function(m) {
         if ($('#divboard-container').html() !== blessedRenderedHtml) {
-            const content = html_beautify($('#divboard-container').html());
-            blessedEditorMarkupContent = content;
-            markupEditor.dispatch({
-                changes: {from: 0, to: markupEditor.state.doc.length, insert: content}
+            let markupStr = markupEditor.state.doc.toString();;
+            m.forEach(() => {
+                const { from, to, html } = parse.markupChangesForMutation(markupStr, m[0], 'divboard-container');
+                const markupChanges = { from: from, to: to, insert: html_beautify(html) };
+
+                const newContents = markupStr.slice(0, markupChanges.from) + markupChanges.insert + markupStr.slice(markupChanges.to);
+
+                blessedEditorMarkupContent = newContents;
+
+                markupEditor.dispatch({
+                    changes: markupChanges
+                });
+
+                markupStr = newContents;
             });
         }
+        blessedRenderedHtml = null;
     }).observe($('#divboard-container')[0], {
         characterData: true, attributes: true, childList: true, subtree: true
     });
