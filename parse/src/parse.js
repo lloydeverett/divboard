@@ -2,18 +2,18 @@ import * as htmlparser2 from "htmlparser2";
 
 function getDomPath(el, rootId) {
     // before constructing the path, look for the first parent that's actually an element
-    while (el.parentNode != null && !(el instanceof Element)) {
+    while (el.parentNode !== null && !(el instanceof Element)) {
         el = el.parentNode;
     }
 
     const stack = [];
 
-    while (el.parentNode != null) {
+    while (el.parentNode !== null) {
         let sibCount = 0;
         let sibIndex = 0;
         for (let i = 0; i < el.parentNode.childNodes.length; i++) {
             const sib = el.parentNode.childNodes[i];
-            if (sib.nodeName == el.nodeName) {
+            if ('nodeName' in sib && sib.nodeName.toLowerCase() === el.nodeName.toLowerCase()) {
                 if (sib === el) {
                     sibIndex = sibCount;
                 }
@@ -21,7 +21,7 @@ function getDomPath(el, rootId) {
             }
         }
 
-        if (el.hasAttribute('id') && el.id != '') {
+        if (el.hasAttribute('id') && el.id !== '') {
             if (el.id === rootId) {
                 return stack;
             }
@@ -38,6 +38,36 @@ function getDomPath(el, rootId) {
 }
 
 function getAstPath(astNode) {
+    // before constructing the path, look for the first parent that's actually an element
+    while (astNode.parentNode !== null && !('name' in astNode)) {
+        astNode = astNode.parentNode;
+    }
+
+    const stack = [];
+
+    while (astNode.parentNode !== null) {
+        let sibCount = 0;
+        let sibIndex = 0;
+        for (let i = 0; i < astNode.parentNode.childNodes.length; i++) {
+            const sib = astNode.parentNode.childNodes[i];
+            if ('name' in sib && sib.name.toLowerCase() === astNode.name.toLowerCase()) {
+                if (sib === astNode) {
+                    sibIndex = sibCount;
+                }
+                sibCount++;
+            }
+        }
+
+        if ('attribs' in astNode && 'id' in astNode.attribs && astNode.attribs.id !== '') {
+            stack.unshift({ nodeName: astNode.name.toLowerCase(), id: astNode.attribs.id, astNode: astNode });
+        } else {
+            stack.unshift({ nodeName: astNode.name.toLowerCase(), index: sibIndex, astNode: astNode });
+        }
+
+        astNode = astNode.parentNode;
+    }
+
+    return stack;
 }
 
 function followDomPathBestEffort(ast, path) {
@@ -45,7 +75,7 @@ function followDomPathBestEffort(ast, path) {
 
     let i;
     for (i = 0; i < path.length; i++) {
-        let filtered = node.childNodes.filter(n => n.name === path[i].nodeName);
+        let filtered = node.childNodes.filter(n => 'name' in n && n.name.toLowerCase() === path[i].nodeName);
 
         if ('id' in path[i]) {
             const id = path[i].id;
@@ -66,7 +96,31 @@ function followDomPathBestEffort(ast, path) {
     return { astNode: node, pathFollowed: path.slice(0, i) };
 }
 
-function followAstPathBestEffort() {
+function followAstPathBestEffort(rootNode, path) {
+    let node = rootNode;
+
+    let i;
+    for (i = 0; i < path.length; i++) {
+        let filtered = Array.prototype.filter.call(node.childNodes, n => 'nodeName' in n && n.nodeName.toLowerCase() === path[i].nodeName);
+        console.log(filtered);
+
+        if ('id' in path[i]) {
+            const id = path[i].id;
+            filtered = Array.prototype.filter.call(filtered, n => n.id === id);
+            if (filtered.length !== 1) {
+                break;
+            }
+            node = filtered[0];
+        } else {
+            const index = path[i].index;
+            if (index >= filtered.length) {
+                break;
+            }
+            node = filtered[index];
+        }
+    }
+
+    return { node: node, pathFollowed: path.slice(0, i) };
 }
 
 export function markupChangesForDomMutation(markup, mutation, markupRootId) {
@@ -116,5 +170,9 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, editedRangeFrom, edit
     }
     if ('childNodes' in markupAst) { markupAst.childNodes.forEach(walk); }
 
-    console.log(innermostNode);
+    const path = getAstPath(innermostNode);
+
+    // do our best to find the corresponding element in the actual DOM
+    const { node, pathFollowed } = followAstPathBestEffort(document.getElementById(markupRootId), path);
+    console.log(node);
 }
