@@ -63,7 +63,7 @@ function followDomPathBestEffort(ast, path) {
     return { astNode: node, pathFollowed: path.slice(0, i) };
 }
 
-export function markupChangesForMutation(markup, mutation, markupRootId) {
+export function markupChangesForDomMutation(markup, mutation, markupRootId) {
     const markupAst = htmlparser2.parseDocument(markup, {
         withStartIndices: true,
         withEndIndices: true
