@@ -70,7 +70,7 @@ function getAstPath(astNode) {
     return stack;
 }
 
-function followDomPathBestEffort(ast, path) {
+function followPathInAstBestEffort(ast, path) {
     let node = ast;
 
     let i;
@@ -96,7 +96,7 @@ function followDomPathBestEffort(ast, path) {
     return { astNode: node, pathFollowed: path.slice(0, i) };
 }
 
-function followAstPathBestEffort(rootNode, path) {
+function followPathInDomBestEffort(rootNode, path) {
     let node = rootNode;
 
     let i;
@@ -135,7 +135,7 @@ export function markupChangesForDomMutation(markup, mutation, markupRootId) {
     }
 
     // do our best to find the corresponding element in the parsed markup
-    const { astNode, pathFollowed } = followDomPathBestEffort(markupAst, path);
+    const { astNode, pathFollowed } = followPathInAstBestEffort(markupAst, path);
     if (pathFollowed.length === 0 || astNode.startIndex === null || astNode.endIndex === null) {
         return { from: 0, to: markup.length, html: document.getElementById(markupRootId).innerHTML };
     }
@@ -174,7 +174,7 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, editedRang
     const path = getAstPath(innermostNode);
 
     // do our best to find the corresponding element in the actual DOM
-    const { node, pathFollowed } = followAstPathBestEffort(document.getElementById(markupRootId), path);
+    const { node, pathFollowed } = followPathInDomBestEffort(document.getElementById(markupRootId), path);
     if (pathFollowed.length === 0) {
         // return { node: node, html:  };
     }
