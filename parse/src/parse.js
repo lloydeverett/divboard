@@ -37,6 +37,9 @@ function getDomPath(el, rootId) {
     return null;
 }
 
+function getAstPath(astNode) {
+}
+
 function followDomPathBestEffort(ast, path) {
     let node = ast;
 
@@ -63,6 +66,9 @@ function followDomPathBestEffort(ast, path) {
     return { astNode: node, pathFollowed: path.slice(0, i) };
 }
 
+function followAstPathBestEffort() {
+}
+
 export function markupChangesForDomMutation(markup, mutation, markupRootId) {
     const markupAst = htmlparser2.parseDocument(markup, {
         withStartIndices: true,
@@ -82,4 +88,33 @@ export function markupChangesForDomMutation(markup, mutation, markupRootId) {
     }
     const elementAtPathFollowed = pathFollowed[pathFollowed.length - 1].element;
     return { from: astNode.startIndex, to: astNode.endIndex + 1, html: elementAtPathFollowed.outerHTML };
+}
+
+export function domNodeToUpdateForMarkupChanges(oldMarkup, editedRangeFrom, editedRangeTo, markupRootId) {
+    const markupAst = htmlparser2.parseDocument(oldMarkup, {
+        withStartIndices: true,
+        withEndIndices: true
+    });
+
+    let innermostNode = markupAst;
+    let innermostNodeFrom = 0;
+    let innermostNodeEnd = oldMarkup.length;
+    function walk(n) {
+        const nFrom = n.startIndex;
+        const nTo = n.endIndex + 1;
+        if (/* is the range for this node narrower than the existing best candidate? */
+            nFrom >= innermostNodeFrom && nTo <= innermostNodeEnd && (nFrom > innermostNodeFrom || nTo < innermostNodeEnd) &&
+            /* is the edited range contained within the range of this node? */
+            nFrom <= editedRangeFrom && nTo >= editedRangeTo
+        ) {
+            innermostNode = n;
+            innermostNodeFrom = nFrom;
+            innermostNodeEnd = nTo;
+        }
+
+        if ('childNodes' in n) { n.childNodes.forEach(childNode => walk(childNode)); }
+    }
+    if ('childNodes' in markupAst) { markupAst.childNodes.forEach(childNode => walk(childNode)); }
+
+    console.log(innermostNode);
 }

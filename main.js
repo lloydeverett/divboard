@@ -28,6 +28,9 @@ editor.init(docId).then(() => {
 
     markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function(e) {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
+            // todo handle changed ranges bigger than one elem
+            // console.log(e.startState.doc.toString());
+            parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.changedRanges[0].fromA, e.changedRanges[0].fromB, 'divboard-container');
             renderMarkup();
         }
         blessedEditorMarkupContent = null;
