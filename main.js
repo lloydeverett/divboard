@@ -30,7 +30,8 @@ editor.init(docId).then(() => {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
             const from = Math.min(...(e.changedRanges.map(r => r.fromA)));
             const to = Math.max(...(e.changedRanges.map(r => r.fromB)));
-            renderMarkup(parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), from, to, 'divboard-container'));
+            const { node, html } = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), from, to, 'divboard-container');
+            renderMarkup(node, html);
         }
         blessedEditorMarkupContent = null;
     });
@@ -71,11 +72,15 @@ editor.init(docId).then(() => {
     });
 
     // rendering of input markup to divboard
-    function renderMarkup() {
-        $('#divboard-container').html(markupEditor.state.doc.toString());
+    function renderMarkup(node, html) {
+        if (node.id === 'divboard-container') {
+            $('#divboard-container')[0].innerHTML = html;
+        } else {
+            node.outerHTML = html;
+        }
         blessedRenderedHtml = $('#divboard-container').html();
     }
-    renderMarkup();
+    renderMarkup($('#divboard-container')[0], markupEditor.state.doc.toString());
 });
 
 // handle viewport width changes, and put divboard container elem in the right place

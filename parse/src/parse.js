@@ -33,7 +33,8 @@ function getDomPath(el, rootId) {
         el = el.parentNode;
     }
 
-    // ok, so we've traversed upward but never found our root element ID, suggesting that this node has been detached from the document
+    // ok, so we've traversed upward but never found our root element ID
+    // this suggests that this node has been detached from the document
     return null;
 }
 
@@ -70,7 +71,7 @@ function getAstPath(astNode) {
     return stack;
 }
 
-function followPathInAstBestEffort(ast, path) {
+function followPathInAstBestEffort(ast, path, keyAtWhichToWriteAstNodeToPathElements) {
     let node = ast;
 
     let i;
@@ -90,6 +91,10 @@ function followPathInAstBestEffort(ast, path) {
                 break;
             }
             node = filtered[index];
+        }
+
+        if (keyAtWhichToWriteAstNodeToPathElements) {
+            path[i][keyAtWhichToWriteAstNodeToPathElements] = node;
         }
     }
 
@@ -149,7 +154,7 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, editedRang
         withEndIndices: true
     });
 
-    // find the innermost node affected by this change
+    // find the innermost node affected by this change in the old markup
     let innermostNode = oldMarkupAst;
     let innermostNodeFrom = 0;
     let innermostNodeEnd = oldMarkup.length;
@@ -173,10 +178,30 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, editedRang
     // ok, so we've found the innermost node that covers all the changes in the old DOM
     const path = getAstPath(innermostNode);
 
-    // do our best to find the corresponding element in the actual DOM
-    const { node, pathFollowed } = followPathInDomBestEffort(document.getElementById(markupRootId), path);
+    // let's look for the best analogue in the new markup
+    const newMarkupAst = htmlparser2.parseDocument(newMarkup, {
+        withStartIndices: true,
+        withEndIndices: true
+    });
+    const newMarkupFollowPathResult = followPathInAstBestEffort(newMarkupAst, path, 'newMarkupAstNode' /* store new markup node refs in path, we'll need these later */);
+
+    // following the path is best-effort, so we might not have reached innermostNode in the new markup
+    // which node in the old markup content corresponds to the node we actually reached in the new markup? well,
+    // the old DOM's elements are still stored in the path, so assumming newMarkupPathFollowed.length > 0,
+    //   newMarkupPathFollowed[newMarkupPathFollowed.length - 1].astNode
+    // but lets hold our horses, because...
+
+    // we still need to try and find the analogue to this node in the DOM
+    const { node, pathFollowed } = followPathInDomBestEffort(document.getElementById(markupRootId), newMarkupFollowPathResult.pathFollowed);
+    // ...which is *also* best effort, and may not reach the aforementioned node in the old DOM
+    // thankfully, though, we can now finally obtain a node that has analogues in the old markup, new markup and the DOM
     if (pathFollowed.length === 0) {
-        // return { node: node, html:  };
+        return { node: document.getElementById(markupRootId), html: newMarkup };
     }
-    return node; 
+    const newMarkupNode = pathFollowed[pathFollowed.length - 1].newMarkupAstNode;
+    // const oldMarkupNode = pathFollowed[pathFollowed.length - 1].astNode; // no actual use for this, but reassuring that it's here :)
+    if (newMarkupNode.startIndex === null || newMarkupNode.endIndex === null) {
+        return { node: document.getElementById(markupRootId), html: newMarkup };
+    }
+    return { node: node, html: newMarkup.slice(newMarkupNode.startIndex, newMarkupNode.endIndex + 1) }
 }
