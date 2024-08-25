@@ -30,8 +30,10 @@ editor.init(docId).then(() => {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
             const from = Math.min(...(e.changedRanges.map(r => r.fromA)));
             const to = Math.max(...(e.changedRanges.map(r => r.fromB)));
-            const { node, html } = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), from, to, 'divboard-container');
-            renderMarkup(node, html);
+            const parseResult = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), from, to, 'divboard-container');
+            if (parseResult !== null) {
+                renderMarkup(parseResult.node, parseResult.html);
+            }
         }
         blessedEditorMarkupContent = null;
     });

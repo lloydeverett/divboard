@@ -148,60 +148,74 @@ export function markupChangesForDomMutation(markup, mutation, markupRootId) {
     return { from: astNode.startIndex, to: astNode.endIndex + 1, html: elementAtPathFollowed.outerHTML };
 }
 
+function diffAstsForInnermostNodeWithChanges(oldAst, newAst) {
+    function serializeAstNode(node) {
+        return JSON.stringify({
+            ...node,
+            childNodeCount: 'childNodes' in node ? node.childNodes.length : null,
+            parent: undefined,
+            prev: undefined,
+            next: undefined,
+            children: undefined,
+            startIndex: undefined,
+            endIndex: undefined
+        });
+    }
+    if (serializeAstNode(oldAst) !== serializeAstNode(newAst)) {
+        return { oldNode: oldAst, newNode: newAst } // differences found
+    }
+    if (!('childNodes' in oldAst)) {
+        return null; // no differences
+    }
+    let changesFound = null;
+    for (let i = 0; i < oldAst.childNodes.length; i++) {
+        const oldChild = oldAst.childNodes[i];
+        const newChild = newAst.childNodes[i];
+        const diffResult = diffAstsForInnermostNodeWithChanges(oldChild, newChild);
+        if (diffResult !== null) {
+            if (changesFound === null) {
+                changesFound = diffResult;
+            } else {
+                return { oldNode: oldAst, newNode: newAst } // differences found in multiple children
+            }
+        }
+    }
+    if (changesFound === null) {
+        return null; // no differences
+    }
+    return changesFound; // only one child changed, so return result for that diff
+}
+
 export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, editedRangeFrom, editedRangeTo, markupRootId) {
     const oldMarkupAst = htmlparser2.parseDocument(oldMarkup, {
         withStartIndices: true,
         withEndIndices: true
     });
-
-    // find the innermost node affected by this change in the old markup
-    let innermostNode = oldMarkupAst;
-    let innermostNodeFrom = 0;
-    let innermostNodeEnd = oldMarkup.length;
-    function walk(n) {
-        const nFrom = n.startIndex;
-        const nTo = n.endIndex + 1;
-        if (/* is the range for this node narrower than the existing best candidate? */
-            nFrom >= innermostNodeFrom && nTo <= innermostNodeEnd && (nFrom > innermostNodeFrom || nTo < innermostNodeEnd) &&
-            /* is the edited range contained within the range of this node? */
-            nFrom <= editedRangeFrom && nTo >= editedRangeTo
-        ) {
-            innermostNode = n;
-            innermostNodeFrom = nFrom;
-            innermostNodeEnd = nTo;
-        }
-
-        if ('childNodes' in n) { n.childNodes.forEach(walk); }
-    }
-    if ('childNodes' in oldMarkupAst) { oldMarkupAst.childNodes.forEach(walk); }
-
-    // ok, so we've found the innermost node that covers all the changes in the old DOM
-    const path = getAstPath(innermostNode);
-
-    // let's look for the best analogue in the new markup
     const newMarkupAst = htmlparser2.parseDocument(newMarkup, {
         withStartIndices: true,
         withEndIndices: true
     });
-    const newMarkupFollowPathResult = followPathInAstBestEffort(newMarkupAst, path, 'newMarkupAstNode' /* store new markup node refs in path, we'll need these later */);
 
-    // following the path is best-effort, so we might not have reached innermostNode in the new markup
-    // which node in the old markup content corresponds to the node we actually reached in the new markup? well,
-    // the old DOM's elements are still stored in the path, so assumming newMarkupPathFollowed.length > 0,
-    //   newMarkupPathFollowed[newMarkupPathFollowed.length - 1].astNode
-    // but lets hold our horses, because...
+    const result = diffAstsForInnermostNodeWithChanges(oldMarkupAst, newMarkupAst);
+    if (result === null) {
+        return null;
+    }
 
-    // we still need to try and find the analogue to this node in the DOM
-    const { node, pathFollowed } = followPathInDomBestEffort(document.getElementById(markupRootId), newMarkupFollowPathResult.pathFollowed);
-    // ...which is *also* best effort, and may not reach the aforementioned node in the old DOM
-    // thankfully, though, we can now finally obtain a node that has analogues in the old markup, new markup and the DOM
-    if (pathFollowed.length === 0) {
+    // ok, so we've found a node in the old and new markup that covers all of the changes
+    const oldPath = getAstPath(result.oldNode);
+    const newPath = getAstPath(result.newNode);
+
+    // let's try to find a corresponding node in the DOM
+    // following the path is best-effort, so we might not reach all the way to result.oldNode in the DOM
+    const followPathResult = followPathInDomBestEffort(document.getElementById(markupRootId), oldPath);
+    const oldPathFollowed = followPathResult.pathFollowed;
+    if (oldPathFollowed.length === 0) {
         return { node: document.getElementById(markupRootId), html: newMarkup };
     }
-    const newMarkupNode = pathFollowed[pathFollowed.length - 1].newMarkupAstNode;
-    // const oldMarkupNode = pathFollowed[pathFollowed.length - 1].astNode; // no actual use for this, but reassuring that it's here :)
-    if (newMarkupNode.startIndex === null || newMarkupNode.endIndex === null) {
+    const newPathFollowed = newPath.slice(0, oldPathFollowed.length);
+    const newMarkupNodeFollowed = newPathFollowed[newPathFollowed.length - 1].astNode;
+    if (newMarkupNodeFollowed.startIndex === null || newMarkupNodeFollowed.endIndex === null) {
         return { node: document.getElementById(markupRootId), html: newMarkup };
     }
-    return { node: node, html: newMarkup.slice(newMarkupNode.startIndex, newMarkupNode.endIndex + 1) }
+    return { node: followPathResult.node, html: newMarkup.slice(newMarkupNodeFollowed.startIndex, newMarkupNodeFollowed.endIndex + 1) }
 }
