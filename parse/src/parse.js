@@ -112,9 +112,9 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, editedRangeFrom, edit
             innermostNodeEnd = nTo;
         }
 
-        if ('childNodes' in n) { n.childNodes.forEach(childNode => walk(childNode)); }
+        if ('childNodes' in n) { n.childNodes.forEach(walk); }
     }
-    if ('childNodes' in markupAst) { markupAst.childNodes.forEach(childNode => walk(childNode)); }
+    if ('childNodes' in markupAst) { markupAst.childNodes.forEach(walk); }
 
     console.log(innermostNode);
 }
