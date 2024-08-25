@@ -102,7 +102,6 @@ function followAstPathBestEffort(rootNode, path) {
     let i;
     for (i = 0; i < path.length; i++) {
         let filtered = Array.prototype.filter.call(node.childNodes, n => 'nodeName' in n && n.nodeName.toLowerCase() === path[i].nodeName);
-        console.log(filtered);
 
         if ('id' in path[i]) {
             const id = path[i].id;
@@ -144,13 +143,14 @@ export function markupChangesForDomMutation(markup, mutation, markupRootId) {
     return { from: astNode.startIndex, to: astNode.endIndex + 1, html: elementAtPathFollowed.outerHTML };
 }
 
-export function domNodeToUpdateForMarkupChanges(oldMarkup, editedRangeFrom, editedRangeTo, markupRootId) {
-    const markupAst = htmlparser2.parseDocument(oldMarkup, {
+export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, editedRangeFrom, editedRangeTo, markupRootId) {
+    const oldMarkupAst = htmlparser2.parseDocument(oldMarkup, {
         withStartIndices: true,
         withEndIndices: true
     });
 
-    let innermostNode = markupAst;
+    // find the innermost node affected by this change
+    let innermostNode = oldMarkupAst;
     let innermostNodeFrom = 0;
     let innermostNodeEnd = oldMarkup.length;
     function walk(n) {
@@ -168,11 +168,15 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, editedRangeFrom, edit
 
         if ('childNodes' in n) { n.childNodes.forEach(walk); }
     }
-    if ('childNodes' in markupAst) { markupAst.childNodes.forEach(walk); }
+    if ('childNodes' in oldMarkupAst) { oldMarkupAst.childNodes.forEach(walk); }
 
+    // ok, so we've found the innermost node that covers all the changes in the old DOM
     const path = getAstPath(innermostNode);
 
     // do our best to find the corresponding element in the actual DOM
     const { node, pathFollowed } = followAstPathBestEffort(document.getElementById(markupRootId), path);
-    console.log(node);
+    if (pathFollowed.length === 0) {
+        // return { node: node, html:  };
+    }
+    return node; 
 }
