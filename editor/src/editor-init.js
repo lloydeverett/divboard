@@ -65,7 +65,7 @@ function createEditor(yText, yUndoManager, extraExtensions, parentNode, onDocCha
       EditorView.updateListener.of(
         function (e) {
           if (e.docChanged) {
-            onDocChanged();
+            onDocChanged(e);
           }
         }),
         isFileUrl ? [] : yCollab(yText, provider.awareness, { yUndoManager }),

@@ -26,15 +26,15 @@ editor.init(docId).then(() => {
     let blessedRenderedHtml = null; // "bless" known rendered html so we don't later think this is a DOM mutation
     let blessedEditorMarkupContent = null; // same thing in reverse, so we don't do a re-render when dispatching changes to the editor
 
-    markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function() {
+    markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function(e) {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
             renderMarkup();
         }
         blessedEditorMarkupContent = null;
     });
-    srcEditor = editor.createSrcEditor($('#src-edit')[0], function() {
+    srcEditor = editor.createSrcEditor($('#src-edit')[0], function(e) {
     });
-    cssEditor = editor.createCssEditor($('#css-edit')[0], function() {
+    cssEditor = editor.createCssEditor($('#css-edit')[0], function(e) {
         applyStyles();
     });
 
@@ -45,7 +45,7 @@ editor.init(docId).then(() => {
         if ($('#divboard-container').html() !== blessedRenderedHtml) {
             let markupStr = markupEditor.state.doc.toString();
             mutations.forEach((mutation) => {
-                const parseResult = parse.markupChangesForMutation(markupStr, mutation, 'divboard-container');
+                const parseResult = parse.markupChangesForDomMutation(markupStr, mutation, 'divboard-container');
                 if (parseResult === null) {
                     return;
                 }
