@@ -71,7 +71,7 @@ function getAstPath(astNode) {
     return stack;
 }
 
-function followPathInAstBestEffort(ast, path, keyAtWhichToWriteAstNodeToPathElements) {
+function followPathInAstBestEffort(ast, path) {
     let node = ast;
 
     let i;
@@ -91,10 +91,6 @@ function followPathInAstBestEffort(ast, path, keyAtWhichToWriteAstNodeToPathElem
                 break;
             }
             node = filtered[index];
-        }
-
-        if (keyAtWhichToWriteAstNodeToPathElements) {
-            path[i][keyAtWhichToWriteAstNodeToPathElements] = node;
         }
     }
 
