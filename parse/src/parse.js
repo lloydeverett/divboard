@@ -1,6 +1,6 @@
 import * as htmlparser2 from "htmlparser2";
 
-function getDomPath(el, rootId) {
+function getDomPath(el, rootNode) {
     // before constructing the path, look for the first parent that's actually an element
     while (el.parentNode !== null && !(el instanceof Element)) {
         el = el.parentNode;
@@ -21,10 +21,11 @@ function getDomPath(el, rootId) {
             }
         }
 
+        if (el === rootNode) {
+            return stack;
+        }
+
         if (el.hasAttribute('id') && el.id !== '') {
-            if (el.id === rootId) {
-                return stack;
-            }
             stack.unshift({ nodeName: el.nodeName.toLowerCase(), id: el.id, element: el });
         } else {
             stack.unshift({ nodeName: el.nodeName.toLowerCase(), index: sibIndex, element: el });
@@ -123,13 +124,13 @@ function followPathInDomBestEffort(rootNode, path) {
     return { node: node, pathFollowed: path.slice(0, i) };
 }
 
-export function markupChangesForDomMutation(markup, mutation, markupRootId) {
+export function markupChangesForDomMutation(markup, mutation, rootNode) {
     const markupAst = htmlparser2.parseDocument(markup, {
         withStartIndices: true,
         withEndIndices: true
     });
 
-    const path = getDomPath(mutation.target, markupRootId);
+    const path = getDomPath(mutation.target, rootNode);
     if (path === null) {
         // node detached from document, so nothing to do here; its removal will be reflected by a separate mutation
         return null;
@@ -138,7 +139,7 @@ export function markupChangesForDomMutation(markup, mutation, markupRootId) {
     // do our best to find the corresponding element in the parsed markup
     const { astNode, pathFollowed } = followPathInAstBestEffort(markupAst, path);
     if (pathFollowed.length === 0 || astNode.startIndex === null || astNode.endIndex === null) {
-        return { from: 0, to: markup.length, html: document.getElementById(markupRootId).innerHTML };
+        return { from: 0, to: markup.length, html: rootNode.innerHTML };
     }
     const elementAtPathFollowed = pathFollowed[pathFollowed.length - 1].element;
     return { from: astNode.startIndex, to: astNode.endIndex + 1, html: elementAtPathFollowed.outerHTML };
@@ -182,7 +183,7 @@ function diffAstsForInnermostNodeWithChanges(oldAst, newAst) {
     return changesFound; // only one child changed, so return result for that diff
 }
 
-export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, markupRootId) {
+export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, rootNode) {
     const oldMarkupAst = htmlparser2.parseDocument(oldMarkup, {
         withStartIndices: true,
         withEndIndices: true
@@ -203,15 +204,15 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, markupRoot
 
     // let's try to find a corresponding node in the DOM
     // following the path is best-effort, so we might not reach all the way to result.oldNode in the DOM
-    const followPathResult = followPathInDomBestEffort(document.getElementById(markupRootId), oldPath);
+    const followPathResult = followPathInDomBestEffort(rootNode, oldPath);
     const oldPathFollowed = followPathResult.pathFollowed;
     if (oldPathFollowed.length === 0) {
-        return { node: document.getElementById(markupRootId), html: newMarkup };
+        return { node: rootNode, html: newMarkup };
     }
     const newPathFollowed = newPath.slice(0, oldPathFollowed.length);
     const newMarkupNodeFollowed = newPathFollowed[newPathFollowed.length - 1].astNode;
     if (newMarkupNodeFollowed.startIndex === null || newMarkupNodeFollowed.endIndex === null) {
-        return { node: document.getElementById(markupRootId), html: newMarkup };
+        return { node: rootNode, html: newMarkup };
     }
     return { node: followPathResult.node, html: newMarkup.slice(newMarkupNodeFollowed.startIndex, newMarkupNodeFollowed.endIndex + 1) }
 }

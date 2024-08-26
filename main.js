@@ -28,7 +28,7 @@ editor.init(docId).then(() => {
 
     markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function(e) {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
-            const parseResult = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), 'divboard-container');
+            const parseResult = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), $('#divboard-container')[0]);
             if (parseResult !== null) {
                 renderMarkup(parseResult.node, parseResult.html);
             }
@@ -48,7 +48,7 @@ editor.init(docId).then(() => {
         if ($('#divboard-container').html() !== blessedRenderedHtml) {
             let markupStr = markupEditor.state.doc.toString();
             mutations.forEach((mutation) => {
-                const parseResult = parse.markupChangesForDomMutation(markupStr, mutation, 'divboard-container');
+                const parseResult = parse.markupChangesForDomMutation(markupStr, mutation, $('#divboard-container')[0]);
                 if (parseResult === null) {
                     return;
                 }
