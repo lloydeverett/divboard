@@ -72,7 +72,7 @@ function getAstPath(astNode) {
     return stack;
 }
 
-function followPathInAstBestEffort(ast, path) {
+function followPathInAstBestEffort(ast, path, keyAtWhichToSetNodeInPathElements) {
     let node = ast;
 
     let i;
@@ -92,6 +92,9 @@ function followPathInAstBestEffort(ast, path) {
                 break;
             }
             node = filtered[index];
+        }
+        if (keyAtWhichToSetNodeInPathElements) {
+            path[i][keyAtWhichToSetNodeInPathElements] = node;
         }
     }
 
@@ -145,19 +148,35 @@ export function markupChangesForDomMutation(markup, mutation, rootNode) {
     return { from: astNode.startIndex, to: astNode.endIndex + 1, html: elementAtPathFollowed.outerHTML };
 }
 
+function serializeAstNode(node) {
+    return JSON.stringify({
+        ...node,
+        childNodeCount: 'childNodes' in node ? node.childNodes.length : null,
+        parent: undefined,
+        prev: undefined,
+        next: undefined,
+        children: undefined,
+        startIndex: undefined,
+        endIndex: undefined
+    });
+}
+
+/*
+function serializeAstNodeWithChildren(node) {
+    return JSON.stringify({
+        ...node,
+        childNodes: 'childNodes' in node ? node.childNodes.map(serializeAstNodeWithChildren) : null,
+        parent: undefined,
+        prev: undefined,
+        next: undefined,
+        children: undefined,
+        startIndex: undefined,
+        endIndex: undefined,
+    });
+}
+*/
+
 function diffAstsForInnermostNodeWithChanges(oldAst, newAst) {
-    function serializeAstNode(node) {
-        return JSON.stringify({
-            ...node,
-            childNodeCount: 'childNodes' in node ? node.childNodes.length : null,
-            parent: undefined,
-            prev: undefined,
-            next: undefined,
-            children: undefined,
-            startIndex: undefined,
-            endIndex: undefined
-        });
-    }
     if (serializeAstNode(oldAst) !== serializeAstNode(newAst)) {
         return { oldNode: oldAst, newNode: newAst } // differences found
     }
@@ -199,20 +218,40 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, rootNode) 
     }
 
     // ok, so we've found a node in the old and new markup that covers all of the changes
-    const oldPath = getAstPath(result.oldNode);
-    const newPath = getAstPath(result.newNode);
+    let oldPath = getAstPath(result.oldNode);
+    let newPath = getAstPath(result.newNode);
 
-    // let's try to find a corresponding node in the DOM
-    // following the path is best-effort, so we might not reach all the way to result.oldNode in the DOM
+    // you could, at this point, follow oldPath in the DOM to find the best corresponding node in the DOM, and you'd get some pretty
+    // good results, but there are some weird edge cases for invalid markup where the browser does transformations that make this not
+    // work. <table>foo</table> is a good example: Chrome doesn't like the text fragment appearing directly in the table node, so it
+    // moves the fragment out, and this behaviour causes issues with our logic. a trick we can use here is to look for discrepancies
+    // between the old markup and the current DOM, and if we find any, favour updating a parent node of the one we've found
+    {
+        const domAst = htmlparser2.parseDocument(rootNode.innerHTML, {
+            withStartIndices: true,
+            withEndIndices: true
+        });
+        let domAstPath = followPathInAstBestEffort(domAst, oldPath, 'domAstNode').pathFollowed;
+        let i;
+        for (i = domAstPath.length - 1; i >= 0; i--) {
+            if (serializeAstNode(domAstPath[i].domAstNode) === serializeAstNode(oldPath[i].astNode)) {
+                break;
+            }
+        }
+        oldPath = oldPath.slice(0, i + 1);
+        newPath = newPath.slice(0, i + 1);
+    }
+
+    // ok, now let's try to find a corresponding node in the DOM
     const followPathResult = followPathInDomBestEffort(rootNode, oldPath);
-    const oldPathFollowed = followPathResult.pathFollowed;
-    if (oldPathFollowed.length === 0) {
+    oldPath = followPathResult.pathFollowed;
+    if (oldPath.length === 0) {
         return { node: rootNode, html: newMarkup };
     }
-    const newPathFollowed = newPath.slice(0, oldPathFollowed.length);
-    const newMarkupNodeFollowed = newPathFollowed[newPathFollowed.length - 1].astNode;
-    if (newMarkupNodeFollowed.startIndex === null || newMarkupNodeFollowed.endIndex === null) {
+    newPath = newPath.slice(0, oldPath.length);
+    const newMarkupNode = newPath[newPath.length - 1].astNode;
+    if (newMarkupNode.startIndex === null || newMarkupNode.endIndex === null) {
         return { node: rootNode, html: newMarkup };
     }
-    return { node: followPathResult.node, html: newMarkup.slice(newMarkupNodeFollowed.startIndex, newMarkupNodeFollowed.endIndex + 1) }
+    return { node: followPathResult.node, html: newMarkup.slice(newMarkupNode.startIndex, newMarkupNode.endIndex + 1) }
 }
