@@ -145,39 +145,37 @@ export function markupChangesForDomMutation(markup, mutation, rootNode) {
         return { from: 0, to: markup.length, html: rootNode.innerHTML };
     }
     const elementAtPathFollowed = pathFollowed[pathFollowed.length - 1].element;
-    return { from: astNode.startIndex, to: astNode.endIndex + 1, html: elementAtPathFollowed.outerHTML };
+    return { from: astNode.startIndex, to: Math.min(astNode.endIndex + 1, markup.length), html: elementAtPathFollowed.outerHTML };
 }
 
-function serializeAstNode(node) {
-    return JSON.stringify({
+function shallowAstNode(node) {
+    return {
         ...node,
-        childNodeCount: 'childNodes' in node ? node.childNodes.length : null,
         parent: undefined,
         prev: undefined,
         next: undefined,
         children: undefined,
         startIndex: undefined,
         endIndex: undefined
+    };
+}
+
+function serializeAstNodeWithChildNodeCount(node) {
+    return JSON.stringify({
+        ...shallowAstNode(node),
+        childNodeCount: 'childNodes' in node ? node.childNodes.length : null,
     });
 }
 
-/*
-function serializeAstNodeWithChildren(node) {
+function serializeAstNodeWithChildNodes(node) {
     return JSON.stringify({
-        ...node,
-        childNodes: 'childNodes' in node ? node.childNodes.map(serializeAstNodeWithChildren) : null,
-        parent: undefined,
-        prev: undefined,
-        next: undefined,
-        children: undefined,
-        startIndex: undefined,
-        endIndex: undefined,
+        ...shallowAstNode(node),
+        childNodes: 'childNodes' in node ? node.childNodes.map(shallowAstNode) : null,
     });
 }
-*/
 
 function diffAstsForInnermostNodeWithChanges(oldAst, newAst) {
-    if (serializeAstNode(oldAst) !== serializeAstNode(newAst)) {
+    if (serializeAstNodeWithChildNodeCount(oldAst) !== serializeAstNodeWithChildNodeCount(newAst)) {
         return { oldNode: oldAst, newNode: newAst } // differences found
     }
     if (!('childNodes' in oldAst)) {
@@ -234,7 +232,7 @@ export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, rootNode) 
         let domAstPath = followPathInAstBestEffort(domAst, oldPath, 'domAstNode').pathFollowed;
         let i;
         for (i = domAstPath.length - 1; i >= 0; i--) {
-            if (serializeAstNode(domAstPath[i].domAstNode) === serializeAstNode(oldPath[i].astNode)) {
+            if (serializeAstNodeWithChildNodes(domAstPath[i].domAstNode) === serializeAstNodeWithChildNodes(oldPath[i].astNode)) {
                 break;
             }
         }
