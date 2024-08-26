@@ -182,7 +182,7 @@ function diffAstsForInnermostNodeWithChanges(oldAst, newAst) {
     return changesFound; // only one child changed, so return result for that diff
 }
 
-export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, editedRangeFrom, editedRangeTo, markupRootId) {
+export function domNodeToUpdateForMarkupChanges(oldMarkup, newMarkup, markupRootId) {
     const oldMarkupAst = htmlparser2.parseDocument(oldMarkup, {
         withStartIndices: true,
         withEndIndices: true

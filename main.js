@@ -28,9 +28,7 @@ editor.init(docId).then(() => {
 
     markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function(e) {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
-            const from = Math.min(...(e.changedRanges.map(r => r.fromA)));
-            const to = Math.max(...(e.changedRanges.map(r => r.fromB)));
-            const parseResult = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), from, to, 'divboard-container');
+            const parseResult = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), 'divboard-container');
             if (parseResult !== null) {
                 renderMarkup(parseResult.node, parseResult.html);
             }
