@@ -63,7 +63,7 @@ editor.init(docId).then(() => {
                     return;
                 }
 
-                const markupChanges = { from: parseResult.from, to: parseResult.to, insert: html_beautify(parseResult.html) };
+                const markupChanges = { from: parseResult.from, to: parseResult.to, insert: html_beautify(parseResult.html, { 'indent_size': 2 }) };
 
                 const newContents = markupStr.slice(0, markupChanges.from) + markupChanges.insert + markupStr.slice(markupChanges.to);
 
