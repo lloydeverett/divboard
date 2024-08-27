@@ -20,6 +20,7 @@ if (!isFileUrl) {
     }
     docId = urlParams.get('doc');
 }
+document.title = docId + " – divboard";
 
 // CodeMirror editor + markup rendering
 editor.init(docId).then(() => {

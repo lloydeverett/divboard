@@ -55,7 +55,6 @@ body {
     align-items: center;
     justify-content: space-between;
     padding-left: var(--horizontal-gutter-size);
-    padding-right: 10px;
     top: var(--titlebar-height-negative);
     bottom: 100%;
     left: 0;
@@ -214,7 +213,7 @@ div[contenteditable="true"] {
     flex-direction: row;
     align-items: center;
     pointer-events: auto;
-    margin-left: 20px;
+    margin-left: 10px;
 }
 .titlebar > .titlebar-control:first-child {
     margin-left: 80px;
