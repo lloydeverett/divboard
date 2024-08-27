@@ -6,13 +6,22 @@ const TITLEBAR_HEIGHT = 22;
 document.documentElement.style.setProperty('--titlebar-height', `${TITLEBAR_HEIGHT}px`);
 document.documentElement.style.setProperty('--titlebar-height-negative', `-${TITLEBAR_HEIGHT}px`);
 
-// CodeMirror editor + markup rendering
-const urlParams = new URLSearchParams(window.location.search);
-if (!urlParams.has('doc')) {
-    urlParams.set('doc', 'index');
-    window.location.search = urlParams;
+// find the document ID
+let docId;
+const isFileUrl = window.location.protocol === 'file:';
+if (!isFileUrl) {
+    const docIdInPath = new URL(window.location.href).pathname.split('/').slice(1).join('/');
+    docId = docIdInPath === '' ? 'index' : docIdInPath;
+} else {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.has('doc')) {
+        urlParams.set('doc', 'index');
+        window.location.search = urlParams;
+    }
+    docId = urlParams.get('doc');
 }
-const docId = urlParams.get('doc');
+
+// CodeMirror editor + markup rendering
 editor.init(docId).then(() => {
     let markupEditor;
     let srcEditor;
