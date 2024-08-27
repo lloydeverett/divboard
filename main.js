@@ -63,6 +63,7 @@ editor.init(docId).then(() => {
                     return;
                 }
 
+                // TODO: beautify result should be indented by whatever the current indent level of the node is
                 const markupChanges = { from: parseResult.from, to: parseResult.to, insert: html_beautify(parseResult.html, { 'indent_size': 2 }) };
 
                 const newContents = markupStr.slice(0, markupChanges.from) + markupChanges.insert + markupStr.slice(markupChanges.to);
