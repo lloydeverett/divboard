@@ -21,6 +21,7 @@ if (!isFileUrl) {
     docId = urlParams.get('doc');
 }
 document.title = docId + " – divboard";
+$("#document-name")[0].innerText = docId;
 
 // CodeMirror editor + markup rendering
 editor.init(docId).then(() => {

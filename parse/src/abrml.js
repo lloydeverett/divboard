@@ -38,6 +38,10 @@ export function abrmlToHtml(abrml) {
     // now maybe do the thing we suggested earlier - serialise the whole thing, and then replace <abbrace> with just { to cover edge
     // cases like attrs
 
+    // maybe also
+    // <br> <-> \n
+    // &nbsp; <-> \s
+
     // try to somehow preserve start and end indices
 }
 
