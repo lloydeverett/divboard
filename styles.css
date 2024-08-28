@@ -325,3 +325,6 @@ div[contenteditable="true"] {
     outline-color: #ebdbb2d5;
     background-color: #ebdbb2d5;
 }
+.cm-vim-panel input {
+    color: white;
+}

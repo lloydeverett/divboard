@@ -3,7 +3,7 @@ import createTheme from './create-theme.js';
 
 // Author: unknown
 export const gruvboxLight = createTheme({
-    variant: 'light',
+    variant: 'dark',
     settings: {
         background: '#fbf1c7',
         foreground: '#3c3836',
