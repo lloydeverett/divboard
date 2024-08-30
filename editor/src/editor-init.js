@@ -52,6 +52,12 @@ export async function init(docId) {
       color: userColor.color,
       colorLight: userColor.light
     });
+
+    await new Promise(resolve => {
+      provider.on('synced', () => {
+        resolve();
+      });
+    });
   }
 
   didInit = true;
