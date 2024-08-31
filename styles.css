@@ -105,16 +105,16 @@ body {
     background-color: #dec791;
     color: #3c3836;
 }
-.markup .cm-editor .cm-gutters {
+.markup .pane-body, .markup .cm-editor .cm-gutters {
     background: #eddcb3;
-}
-.src .cm-editor .cm-gutter .cm-activeLineGutter, .src .cm-editor .cm-activeLine {
-    background-color: rgba(0, 124, 111, 0.8);
 }
 .markup .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
     background-color: rgba(163, 118, 34, 0.13);
 }
 
+.src .cm-editor .cm-gutter .cm-activeLineGutter, .src .cm-editor .cm-activeLine {
+    background-color: rgba(0, 124, 111, 0.8);
+}
 .src .cm-editor {
     background-color: #242a25;
 }
@@ -122,22 +122,22 @@ body {
     background-color: #256145;
     color: #ebdbb2;
 }
-.src .cm-editor .cm-gutters {
+.src .pane-body, .src .cm-editor .cm-gutters {
     background-color: #303a32;
     color: #ebdbb2;
 }
 .src .cm-editor .cm-gutter .cm-activeLineGutter, .src .cm-editor .cm-activeLine {
     background-color: rgba(0, 124, 111, 0.22);
 }
+
 .css .cm-editor .cm-layer.cm-selectionLayer .cm-selectionBackground {
     background-color: rgb(229, 216, 170);
 }
-
 .css .titlebar {
     background-color: #7c361f;
     color: #ebdbb2;
 }
-.css .cm-editor .cm-gutters {
+.css .pane-body, .css .cm-editor .cm-gutters {
     background-color: #4a312a;
     color: #ebdbb2;
 }
