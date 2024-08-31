@@ -327,4 +327,5 @@ div[contenteditable="true"] {
 }
 .cm-vim-panel input {
     color: white;
+    font: inherit;
 }
