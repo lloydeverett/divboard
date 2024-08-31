@@ -93,10 +93,13 @@ editor.init(docId).then(() => {
         blessedRenderedHtml = $('#divboard-container').html();
     }
     renderMarkup($('#divboard-container')[0], markupEditor.state.doc.toString());
+
+    // start accepting edits
+    $('#divboard-container').attr('contenteditable', 'true');
 });
 
 // handle viewport width changes, set up splits, and put divboard container elem in the right place
-let divboardContainer = $('<div class="divboard-container" id="divboard-container" contenteditable="true"></div>');
+let divboardContainer = $('<div class="divboard-container" id="divboard-container"></div>');
 let activeSplits = []
 let showingWideLayout = null;
 function onViewportWidthChanged() {
