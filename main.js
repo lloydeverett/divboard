@@ -95,7 +95,7 @@ editor.init(docId).then(() => {
     renderMarkup($('#divboard-container')[0], markupEditor.state.doc.toString());
 });
 
-// handle viewport width changes, and put divboard container elem in the right place
+// handle viewport width changes, set up splits, and put divboard container elem in the right place
 let divboardContainer = $('<div class="divboard-container" id="divboard-container" contenteditable="true"></div>');
 let activeSplits = []
 let showingWideLayout = null;
