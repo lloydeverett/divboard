@@ -54,6 +54,7 @@ collab.init(docId).then(() => {$(function () {
     let blessedRenderedHtml = null; // "bless" known rendered html so we don't later think this is a DOM mutation
     let blessedEditorMarkupContent = null; // same thing in reverse, so we don't do a re-render when dispatching changes to the editor
 
+    // initialise editors
     markupEditor = collab.createMarkupEditor($('#markup-edit')[0], function(e) {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
             const parseResult = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), $('#divboard-container')[0]);
@@ -64,11 +65,13 @@ collab.init(docId).then(() => {$(function () {
         blessedEditorMarkupContent = null;
     });
     srcEditor = collab.createSrcEditor($('#src-edit')[0], function(e) {
+        updateSrcEvaluationButton();
     });
     cssEditor = collab.createCssEditor($('#css-edit')[0], function(e) {
         applyStyles();
     });
 
+    // apply styles
     applyStyles();
 
     // mutation observer to update markup according to divboard changes
@@ -110,12 +113,30 @@ collab.init(docId).then(() => {$(function () {
     }
     renderMarkup($('#divboard-container')[0], markupEditor.state.doc.toString());
 
+    // set up src evaluation button
+    function updateSrcEvaluationButton() {
+        // only display src evaluation button if the source hasn't already been evaluated
+        if (collab.getSrcEvaluated() !== srcEditor.state.doc.toString()) {
+            $('#src-evaluate-button').show();
+        } else {
+            $('#src-evaluate-button').hide();
+        }
+    }
+    collab.setSrcEvaluatedChangedHandler(function() {
+        new Function(collab.getSrcEvaluated())();
+        updateSrcEvaluationButton();
+    });
+    updateSrcEvaluationButton();
+    $('#src-evaluate-button').click(function() {
+        collab.setSrcEvaluated(srcEditor.state.doc.toString());
+    });
+
     // start accepting edits
     $('#divboard-container').attr('contenteditable', 'true');
 })});
 
-// handle viewport width changes, set up splits, and put divboard container elem in the right place
 $(function() {
+    // handle viewport width changes, set up splits, and put divboard container elem in the right place
     let divboardContainer = $('<div class="divboard-container" id="divboard-container"></div>');
     let activeSplits = []
     let showingWideLayout = null;

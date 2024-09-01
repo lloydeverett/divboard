@@ -16,6 +16,7 @@ import * as random from 'lib0/random';
 
 const isFileUrl = window.location.protocol === 'file:';
 
+const YMAP_EVALUATED_SRC_KEY = "evaluatedSrc";
 const HTTP_CONNECTION_STRING = "https://alpha.divboard.app/y-sweet/";
 const WS_CONNECTION_STRING = "wss://alpha.divboard.app/y-sweet/";
 
@@ -30,6 +31,7 @@ const userColors = [
   { color: '#1be7ff', light: '#1be7ff33' }
 ];
 const userColor = userColors[random.uint32() % userColors.length];
+
 const yDoc = new Y.Doc();
 const yMarkup = yDoc.getText('markup');
 const ySrc = yDoc.getText('src');
@@ -37,8 +39,10 @@ const yCss = yDoc.getText('css');
 const yMarkupUndoManager = new Y.UndoManager(yMarkup);
 const ySrcUndoManager = new Y.UndoManager(ySrc);
 const yCssUndoManager = new Y.UndoManager(yCss);
+const yMap = yDoc.getMap();
 
-let provider;
+let provider = null;
+let srcEvaluatedChangedHandler = null;
 let didInit = false;
 
 export async function init(docId) {
@@ -60,11 +64,22 @@ export async function init(docId) {
     });
   }
 
+  yMap.observe(function(eventType, transaction) {
+    if (eventType.keysChanged.has(YMAP_EVALUATED_SRC_KEY) && srcEvaluatedChangedHandler !== null) {
+      srcEvaluatedChangedHandler();
+    }
+  });
+
   didInit = true;
 }
 
+function requireDidInit(fnName) {
+  if (!didInit) {
+    throw new Error("Expected init() function to have been called and completed before calling " + fnName + ".");
+  }
+}
+
 function createEditor(yText, yUndoManager, extraExtensions, parentNode, onDocChanged) {
-  if (!didInit) { throw new Error("Expected init() function to have been called and completed before creating CodeMirror editor."); }
   return new EditorView({
     doc: isFileUrl ? "" : yText.toString(),
     extensions: [
@@ -82,13 +97,32 @@ function createEditor(yText, yUndoManager, extraExtensions, parentNode, onDocCha
 }
 
 export function createMarkupEditor(parentNode, onDocChanged) {
+  requireDidInit('createMarkupEditor');
   return createEditor(yMarkup, yMarkupUndoManager, [html(), gruvboxLight], parentNode, onDocChanged);
 }
 
 export function createSrcEditor(parentNode, onDocChanged) {
+  requireDidInit('createSrcEditor');
   return createEditor(ySrc, ySrcUndoManager, [javascript(), gruvboxDark], parentNode, onDocChanged);
 }
 
 export function createCssEditor(parentNode, onDocChanged) {
+  requireDidInit('createCssEditor');
   return createEditor(yCss, yCssUndoManager, [css(), birdsOfParadise], parentNode, onDocChanged);
+}
+
+export function setSrcEvaluatedChangedHandler(newHandler) {
+  requireDidInit('setSrcEvaluatedChangedHandler');
+  srcEvaluatedChangedHandler = newHandler;
+}
+
+export function setSrcEvaluated(str) {
+  requireDidInit('setSrcEvaluated');
+  yMap.set(YMAP_EVALUATED_SRC_KEY, str);
+}
+
+export function getSrcEvaluated() {
+  requireDidInit('getSrcEvaluated');
+  if (!yMap.has(YMAP_EVALUATED_SRC_KEY)) { return ''; }
+  return yMap.get(YMAP_EVALUATED_SRC_KEY);
 }
