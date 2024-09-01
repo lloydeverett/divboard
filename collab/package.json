@@ -1,5 +1,5 @@
 {
-  "name": "editor",
+  "name": "collab",
   "version": "1.0.0",
   "dependencies": {
     "@codemirror/lang-css": "^6.2.1",

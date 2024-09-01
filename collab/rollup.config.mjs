@@ -3,11 +3,11 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 
 export default {
-    input: './src/editor-init.js',
+    input: './src/collab-init.js',
     output: {
-        file: './build/editor-init.js',
+        file: './build/collab-init.js',
         format: 'iife',
-        name: 'editor',
+        name: 'collab',
     },
     plugins: [
         terser(),

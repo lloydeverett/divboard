@@ -41,7 +41,7 @@ $(function () {
 });
 
 // CodeMirror editor + markup rendering
-editor.init(docId).then(() => {$(function () {
+collab.init(docId).then(() => {$(function () {
     let markupEditor;
     let srcEditor;
     let cssEditor;
@@ -54,7 +54,7 @@ editor.init(docId).then(() => {$(function () {
     let blessedRenderedHtml = null; // "bless" known rendered html so we don't later think this is a DOM mutation
     let blessedEditorMarkupContent = null; // same thing in reverse, so we don't do a re-render when dispatching changes to the editor
 
-    markupEditor = editor.createMarkupEditor($('#markup-edit')[0], function(e) {
+    markupEditor = collab.createMarkupEditor($('#markup-edit')[0], function(e) {
         if (markupEditor.state.doc.toString() !== blessedEditorMarkupContent) {
             const parseResult = parse.domNodeToUpdateForMarkupChanges(e.startState.doc.toString(), e.state.doc.toString(), $('#divboard-container')[0]);
             if (parseResult !== null) {
@@ -63,9 +63,9 @@ editor.init(docId).then(() => {$(function () {
         }
         blessedEditorMarkupContent = null;
     });
-    srcEditor = editor.createSrcEditor($('#src-edit')[0], function(e) {
+    srcEditor = collab.createSrcEditor($('#src-edit')[0], function(e) {
     });
-    cssEditor = editor.createCssEditor($('#css-edit')[0], function(e) {
+    cssEditor = collab.createCssEditor($('#css-edit')[0], function(e) {
         applyStyles();
     });
 
