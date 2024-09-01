@@ -1,8 +1,10 @@
 {
   "name": "parse",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "build": "./node_modules/.bin/rollup -c"
+    "build": "./node_modules/.bin/rollup -c",
+    "test": "node ./test/abrml.js"
   },
   "dependencies": {
     "htmlparser2": "^9.1.0"
