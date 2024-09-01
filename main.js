@@ -36,10 +36,12 @@ if (!isFileUrl) {
     docId = urlParams.get('doc');
 }
 document.title = docId + " – divboard";
-$("#document-name")[0].innerText = docId;
+$(function () {
+    $("#document-name")[0].innerText = docId;
+});
 
 // CodeMirror editor + markup rendering
-editor.init(docId).then(() => {
+editor.init(docId).then(() => {$(function () {
     let markupEditor;
     let srcEditor;
     let cssEditor;
@@ -110,61 +112,63 @@ editor.init(docId).then(() => {
 
     // start accepting edits
     $('#divboard-container').attr('contenteditable', 'true');
-});
+})});
 
 // handle viewport width changes, set up splits, and put divboard container elem in the right place
-let divboardContainer = $('<div class="divboard-container" id="divboard-container"></div>');
-let activeSplits = []
-let showingWideLayout = null;
-function onViewportWidthChanged() {
-    const width = $(window).width();
-    const thresholdWidth = 900;
-    if (width >= thresholdWidth && (showingWideLayout === null || !showingWideLayout)) {
-        showingWideLayout = true;
-        $(document.body).addClass('wide-layout');
-        $(document.body).removeClass('non-wide-layout');
-        $('.if-wide-layout').show();
-        $('.if-non-wide-layout').hide();
-        $('#main-content-divboard-container-parent').append(divboardContainer);
-        activeSplits.forEach(function(split) { split.destroy(); })
-        activeSplits = [
-            Split(['#markup', '#src', '#css'], {
-              minSize: 0,
-              gutterSize: TITLEBAR_HEIGHT,
-              direction: 'vertical'
-            }),
-            Split(['#main-content', '#stack'], {
-              minSize: 0,
-              gutterSize: HORIZONTAL_GUTTER_SIZE,
-              direction: 'horizontal',
-              sizes: [60, 40]
-            }),
-        ];
-    } else if (width < thresholdWidth && (showingWideLayout === null || showingWideLayout)) {
-        showingWideLayout = false;
-        $(document.body).addClass('non-wide-layout');
-        $(document.body).removeClass('wide-layout');
-        $('.if-wide-layout').hide();
-        $('.if-non-wide-layout').show();
-        $('#stack-divboard-container-parent').append(divboardContainer);
-        activeSplits.forEach(function(split) { split.destroy(); })
-        activeSplits = [
-            Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
-              minSize: 0,
-              gutterSize: TITLEBAR_HEIGHT,
-              direction: 'vertical',
-              sizes: [45, 55 / 3, 55 / 3, 55 / 3]
-            })
-        ];
+$(function() {
+    let divboardContainer = $('<div class="divboard-container" id="divboard-container"></div>');
+    let activeSplits = []
+    let showingWideLayout = null;
+    function onViewportWidthChanged() {
+        const width = $(window).width();
+        const thresholdWidth = 900;
+        if (width >= thresholdWidth && (showingWideLayout === null || !showingWideLayout)) {
+            showingWideLayout = true;
+            $(document.body).addClass('wide-layout');
+            $(document.body).removeClass('non-wide-layout');
+            $('.if-wide-layout').show();
+            $('.if-non-wide-layout').hide();
+            $('#main-content-divboard-container-parent').append(divboardContainer);
+            activeSplits.forEach(function(split) { split.destroy(); })
+            activeSplits = [
+                Split(['#markup', '#src', '#css'], {
+                minSize: 0,
+                gutterSize: TITLEBAR_HEIGHT,
+                direction: 'vertical'
+                }),
+                Split(['#main-content', '#stack'], {
+                minSize: 0,
+                gutterSize: HORIZONTAL_GUTTER_SIZE,
+                direction: 'horizontal',
+                sizes: [60, 40]
+                }),
+            ];
+        } else if (width < thresholdWidth && (showingWideLayout === null || showingWideLayout)) {
+            showingWideLayout = false;
+            $(document.body).addClass('non-wide-layout');
+            $(document.body).removeClass('wide-layout');
+            $('.if-wide-layout').hide();
+            $('.if-non-wide-layout').show();
+            $('#stack-divboard-container-parent').append(divboardContainer);
+            activeSplits.forEach(function(split) { split.destroy(); })
+            activeSplits = [
+                Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
+                minSize: 0,
+                gutterSize: TITLEBAR_HEIGHT,
+                direction: 'vertical',
+                sizes: [45, 55 / 3, 55 / 3, 55 / 3]
+                })
+            ];
+        }
     }
-}
-onViewportWidthChanged();
-$(window).on("resize", function(event) {
     onViewportWidthChanged();
-});
+    $(window).on("resize", function(event) {
+        onViewportWidthChanged();
+    });
 
-// button group implementation
-$('.button-group > .button').click(function (event) {
-    $(event.currentTarget.parentNode.childNodes).removeClass('button-selected');
-    $(event.currentTarget).addClass('button-selected');
+    // button group implementation
+    $('.button-group > .button').click(function (event) {
+        $(event.currentTarget.parentNode.childNodes).removeClass('button-selected');
+        $(event.currentTarget).addClass('button-selected');
+    });
 });
