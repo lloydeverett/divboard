@@ -114,6 +114,9 @@ collab.init(docId).then(() => {$(function () {
     renderMarkup($('#divboard-container')[0], markupEditor.state.doc.toString());
 
     // set up src evaluation button
+    function evaluateSrc() {
+        new Function(collab.getSrcEvaluated())();
+    }
     function updateSrcEvaluationButton() {
         // only display src evaluation button if the source hasn't already been evaluated
         if (collab.getSrcEvaluated() !== srcEditor.state.doc.toString()) {
@@ -123,13 +126,14 @@ collab.init(docId).then(() => {$(function () {
         }
     }
     collab.setSrcEvaluatedChangedHandler(function() {
-        new Function(collab.getSrcEvaluated())();
+        evaluateSrc();
         updateSrcEvaluationButton();
     });
     updateSrcEvaluationButton();
     $('#src-evaluate-button').click(function() {
         collab.setSrcEvaluated(srcEditor.state.doc.toString());
     });
+    evaluateSrc();
 
     // start accepting edits
     $('#divboard-container').attr('contenteditable', 'true');
