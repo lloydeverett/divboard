@@ -6,6 +6,21 @@ const TITLEBAR_HEIGHT = 22;
 document.documentElement.style.setProperty('--titlebar-height', `${TITLEBAR_HEIGHT}px`);
 document.documentElement.style.setProperty('--titlebar-height-negative', `-${TITLEBAR_HEIGHT}px`);
 
+// little wrapper around html_beautify
+function beautifyHtmlInPlace(newHtml, originalSource, originalSourceStartIndex) {
+    // we're going to beautify the code we insert, but html_beautify doesn't know what the indentation level is for the block as a whole
+    // so we need to figure out what that is and then add extra indentation to the block ourselves
+    let blockIndentation = '';
+    for (let i = originalSourceStartIndex - 1; i >= 0 && originalSource[i] !== '\n'; i--) {
+        if (originalSource[i] === ' ' || originalSource[i] === '\t') {
+            blockIndentation = originalSource[i] + blockIndentation;
+        } else {
+            blockIndentation = '';
+        }
+    }
+    return html_beautify(newHtml, { 'indent_size': 2 }).replace('\n', '\n' + blockIndentation);
+}
+
 // find the document ID
 let docId;
 const isFileUrl = window.location.protocol === 'file:';
@@ -64,8 +79,7 @@ editor.init(docId).then(() => {
                     return;
                 }
 
-                // TODO: beautify result should be indented by whatever the current indent level of the node is
-                const markupChanges = { from: parseResult.from, to: parseResult.to, insert: html_beautify(parseResult.html, { 'indent_size': 2 }) };
+                const markupChanges = { from: parseResult.from, to: parseResult.to, insert: beautifyHtmlInPlace(parseResult.html, markupStr, parseResult.from) };
 
                 const newContents = markupStr.slice(0, markupChanges.from) + markupChanges.insert + markupStr.slice(markupChanges.to);
 
