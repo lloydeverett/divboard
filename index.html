@@ -20,14 +20,14 @@
 
     <style id="divboard-input-styles"> /* populated in JS */ </style>
 
-    <script src="jquery-3.7.1.slim.min.js"></script>
+    <script src="libs/jquery-3.7.1.slim.min.js"></script>
     <script src="editor/build/editor-init.js"></script>
     <script src="main.js"></script> <!-- we want to run this ASAP because it kicks off requests to the y-collab bckend on evaluation,
                                          and we want the sync to happen as quickly as possible -->
 
     <!-- main.js depends on these, but only in event listeners that execute after the DOM is loaded, so we can defer these safely -->
-    <script defer src="split.js"></script>
-    <script defer src="beautify-html.min.js"></script>
+    <script defer src="libs/split.js"></script>
+    <script defer src="libs/beautify-html.min.js"></script>
     <script defer src="parse/build/parse.js"></script>
 </head>
 <body> <!-- "wide-layout" or "non-wide-layout" class will be added to body according to layout in JS -->
