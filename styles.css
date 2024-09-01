@@ -217,7 +217,7 @@ div[contenteditable="true"] {
     pointer-events: auto;
     margin-left: 10px;
 }
-.titlebar > .titlebar-control:first-child {
+.wide-layout .titlebar > .titlebar-control:first-child {
     margin-left: 80px;
 }
 .button {
