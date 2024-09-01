@@ -329,5 +329,13 @@ div[contenteditable="true"] {
 }
 .cm-vim-panel input {
     color: white;
-    font: inherit;
 }
+
+.cm-editor .cm-vim-panel {
+    font-family: monospace;
+}
+/* Replace the rule above with the following once we have a mono font that actually looks good in place of the default:
+   .cm-editor, .cm-editor .cm-vim-panel, .cm-editor .cm-content, .cm-vim-panel input {
+       font-family: 'Inconsolata', monospace;
+   }
+ */
