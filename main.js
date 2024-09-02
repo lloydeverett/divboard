@@ -133,10 +133,12 @@ collab.init(docId).then(() => {$(function () {
     $('#src-evaluate-button').click(function() {
         collab.setSrcEvaluated(srcEditor.state.doc.toString());
     });
-    evaluateSrc();
 
     // start accepting edits
     $('#divboard-container').attr('contenteditable', 'true');
+
+    // initial src evaluation
+    evaluateSrc();
 })});
 
 $(function() {
