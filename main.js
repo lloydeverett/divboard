@@ -260,7 +260,7 @@ $(function() {
     iframe.style.position = 'absolute';
     iframe.style.top = '-9999px'; // make sure this isn't visible
     window.addEventListener('message', function(event) {
-        if ("scrollbarWidth" in event.data) {
+        if (event.source === iframe.contentWindow) {
             const newScrollbarWidth = event.data.scrollbarWidth;
             if (newScrollbarWidth === 0 && lastScrollbarWidth !== 0) {
                 $('#scrollbar-styles').html('');
