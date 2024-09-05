@@ -233,11 +233,11 @@ $(function() {
         $(event.currentTarget).addClass('button-selected');
     });
 
-    // we want to style scrollbars via webkit styles if and only if the user agent is hiding scrollbars
+    // we want to style scrollbars via webkit styles if and only if the user agent is not hiding scrollbars
     // we can do this by creating a measruement node and then determining the width of its scrollbars
     // we'll have to do this in an iframe because applying *any* styles to scrollbars on this page will
-    // totally prevent us from measuring the default behaviour (webkit custom scrollbar styling is
-    // rather all or nothing)
+    // totally prevent us from measuring the default behaviour (webkit custom scrollbar styling is rather
+    // all or nothing)
     const iframe = document.createElement("iframe");
     iframe.srcdoc = `<!doctype html>
     <head></head>
