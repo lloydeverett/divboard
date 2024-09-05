@@ -21,6 +21,27 @@ function beautifyHtmlInPlace(newHtml, originalSource, originalSourceStartIndex) 
     return html_beautify(newHtml, { 'indent_size': 2 }).replace('\n', '\n' + blockIndentation);
 }
 
+// a little helper function to evaluate source within the scope of the user's last source evaluation
+let evalInSourceScopeFn = null; // function to evaluate an expression within the scope of the last successful execution of the user's source (or null)
+                                // unless the user does something weird in their source, should be either null or (exp) => { ... }
+function evaluateInSrcScope(expStr, defaultFn) {
+    if (evalInSourceScopeFn === null) {
+        return defaultFn(expStr);
+    }
+    try {
+        return evalInSourceScopeFn(expStr);
+    } catch (err) {
+        // TODO Reflect this in the UI properly, perhaps in a console window
+        const defaultResult = defaultFn(expStr);
+        console.error('Exception thrown while evaluating expression in source scope. Will fall back to default return value instead.',
+            expStr,
+            err,
+            defaultResult
+        );
+        return defaultResult;
+    }
+}
+
 // find the document ID
 let docId;
 const isFileUrl = window.location.protocol === 'file:';
@@ -115,7 +136,20 @@ collab.init(docId).then(() => {$(function () {
 
     // set up src evaluation button
     function evaluateSrc() {
-        new Function(collab.getSrcEvaluated())();
+        const src = collab.getSrcEvaluated();
+        // we're going to evaluate the source via an immediately invoked function, but we need to be able
+        // to evaluate expressions in the scope defined by the function, so let's add a return statement
+        // that lets us do that
+        const fn = new Function(src + '\n;return (exp) => eval(exp);');
+        try {
+            evalInSourceScopeFn = fn();
+        } catch (err) {
+            // TODO Reflect this in the UI properly, perhaps in a console window
+            console.error('Exception thrown while evaluating source. Will keep using functions defined in previous successful evaluation.',
+                src,
+                err
+            );
+        }
     }
     function updateSrcEvaluationButton() {
         // only display src evaluation button if the source hasn't already been evaluated
@@ -198,4 +232,63 @@ $(function() {
         $(event.currentTarget.parentNode.childNodes).removeClass('button-selected');
         $(event.currentTarget).addClass('button-selected');
     });
+
+    // we want to style scrollbars via webkit styles if and only if the user agent is hiding scrollbars
+    // we can do this by creating a measruement node and then determining the width of its scrollbars
+    // we'll have to do this in an iframe because applying *any* styles to scrollbars on this page will
+    // totally prevent us from measuring the default behaviour (webkit custom scrollbar styling is
+    // rather all or nothing)
+    let lastScrollbarWidth = null;
+    const iframe = document.createElement("iframe");
+    iframe.srcdoc = `<!doctype html>
+    <head></head>
+    <body>
+        <div id="scroll-div" style="width: 100px; height: 100px; overflow: scroll;"></div>
+        <script>
+            const scrollDiv = document.getElementById("scroll-div");
+            function postScrollbarWidth() {
+                const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+                window.parent.postMessage({ scrollbarWidth: scrollbarWidth }, "*");
+            }
+            setInterval(postScrollbarWidth, 10000);
+            postScrollbarWidth();
+        </script>
+    </body>`;
+    iframe.style.width = '600px';
+    iframe.style.height = '400px';
+    iframe.style.border = 'none';
+    iframe.style.position = 'absolute';
+    iframe.style.top = '-9999px'; // make sure this isn't visible
+    window.addEventListener('message', function(event) {
+        if ("scrollbarWidth" in event.data) {
+            const newScrollbarWidth = event.data.scrollbarWidth;
+            if (newScrollbarWidth === 0 && lastScrollbarWidth !== 0) {
+                $('#scrollbar-styles').html('');
+            } else if (newScrollbarWidth !== 0 && (lastScrollbarWidth === 0 || lastScrollbarWidth === null)) {
+                $('#scrollbar-styles').html(`
+                    ::-webkit-scrollbar {
+                        background-color: #00000020;
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 4px;
+                    }
+                    ::-webkit-scrollbar-track {
+                        background-color: #00000000;
+                    }
+                    ::-webkit-scrollbar-thumb {
+                        background-color: #00000065;
+                        border-radius: 4px;
+                    }
+                    ::-webkit-scrollbar-button {
+                        display: none;
+                    }
+                    ::-webkit-scrollbar-corner {
+                        background-color: #00000000;
+                    }
+                `);
+            }
+            lastScrollbarWidth = newScrollbarWidth;
+        }
+    });
+    document.body.appendChild(iframe);
 });
