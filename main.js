@@ -238,7 +238,6 @@ $(function() {
     // we'll have to do this in an iframe because applying *any* styles to scrollbars on this page will
     // totally prevent us from measuring the default behaviour (webkit custom scrollbar styling is
     // rather all or nothing)
-    let lastScrollbarWidth = null;
     const iframe = document.createElement("iframe");
     iframe.srcdoc = `<!doctype html>
     <head></head>
@@ -250,8 +249,8 @@ $(function() {
                 const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
                 window.parent.postMessage({ scrollbarWidth: scrollbarWidth }, "*");
             }
-            setInterval(postScrollbarWidth, 10000);
             postScrollbarWidth();
+            new ResizeObserver(postScrollbarWidth).observe(scrollDiv);
         </script>
     </body>`;
     iframe.style.width = '600px';
@@ -261,10 +260,10 @@ $(function() {
     iframe.style.top = '-9999px'; // make sure this isn't visible
     window.addEventListener('message', function(event) {
         if (event.source === iframe.contentWindow) {
-            const newScrollbarWidth = event.data.scrollbarWidth;
-            if (newScrollbarWidth === 0 && lastScrollbarWidth !== 0) {
+            const scrollbarWidth = event.data.scrollbarWidth;
+            if (scrollbarWidth === 0) {
                 $('#scrollbar-styles').html('');
-            } else if (newScrollbarWidth !== 0 && (lastScrollbarWidth === 0 || lastScrollbarWidth === null)) {
+            } else {
                 $('#scrollbar-styles').html(`
                     ::-webkit-scrollbar {
                         background-color: #00000020;
@@ -287,7 +286,6 @@ $(function() {
                     }
                 `);
             }
-            lastScrollbarWidth = newScrollbarWidth;
         }
     });
     document.body.appendChild(iframe);
