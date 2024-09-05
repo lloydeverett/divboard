@@ -193,15 +193,15 @@ $(function() {
             activeSplits.forEach(function(split) { split.destroy(); })
             activeSplits = [
                 Split(['#markup', '#src', '#css'], {
-                minSize: 0,
-                gutterSize: TITLEBAR_HEIGHT,
-                direction: 'vertical'
+                    minSize: 0,
+                    gutterSize: TITLEBAR_HEIGHT,
+                    direction: 'vertical'
                 }),
                 Split(['#main-content', '#stack'], {
-                minSize: 0,
-                gutterSize: HORIZONTAL_GUTTER_SIZE,
-                direction: 'horizontal',
-                sizes: [60, 40]
+                    minSize: 0,
+                    gutterSize: HORIZONTAL_GUTTER_SIZE,
+                    direction: 'horizontal',
+                    sizes: [60, 40]
                 }),
             ];
         } else if (width < thresholdWidth && (showingWideLayout === null || showingWideLayout)) {
@@ -214,10 +214,10 @@ $(function() {
             activeSplits.forEach(function(split) { split.destroy(); })
             activeSplits = [
                 Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
-                minSize: 0,
-                gutterSize: TITLEBAR_HEIGHT,
-                direction: 'vertical',
-                sizes: [45, 55 / 3, 55 / 3, 55 / 3]
+                    minSize: 0,
+                    gutterSize: TITLEBAR_HEIGHT,
+                    direction: 'vertical',
+                    sizes: [45, 55 / 3, 55 / 3, 55 / 3]
                 })
             ];
         }
