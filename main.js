@@ -21,24 +21,34 @@ function beautifyHtmlInPlace(newHtml, originalSource, originalSourceStartIndex) 
     return html_beautify(newHtml, { 'indent_size': 2 }).replace('\n', '\n' + blockIndentation);
 }
 
-// a little helper function to evaluate source within the scope of the user's last source evaluation
-let evalInSourceScopeFn = null; // function to evaluate an expression within the scope of the last successful execution of the user's source (or null)
-                                // unless the user does something weird in their source, should be either null or (exp) => { ... }
-function evaluateInSrcScope(expStr, defaultFn) {
-    if (evalInSourceScopeFn === null) {
-        return defaultFn(expStr);
+// some definitions we'll need to handle user-defined functions
+const srcPrefix = `
+function onBoardChanged() {};
+`;
+const srcSuffix = `
+return {
+    onBoardChanged: onBoardChanged
+};
+`
+function evalOnBoardChanged() { evalUdf('onBoardChanged') }
+function postprocessUserSrcString(str) {
+    return srcPrefix + str + srcSuffix;
+}
+const defaultUdfs = new Function(postprocessUserSrcString(''))();
+let currentUdfs = null;
+function evalUdf(name, params) {
+    if (currentUdfs === null) {
+        return !!params ? defaultUdfs[name](...params) : defaultUdfs[name]();
     }
     try {
-        return evalInSourceScopeFn(expStr);
+        return !!params ? currentUdfs[name](...params) : currentUdfs[name]();
     } catch (err) {
         // TODO Reflect this in the UI properly, perhaps in a console window
-        const defaultResult = defaultFn(expStr);
-        console.error('Exception thrown while evaluating expression in source scope. Will fall back to default return value instead.',
-            expStr,
-            err,
-            defaultResult
+        console.warn('Exception thrown while evaluating user-defined function. Will fall back to default function definition instead.',
+            name,
+            err
         );
-        return defaultResult;
+        return !!params ? defaultUdfs[name](...params) : defaultUdfs[name]();
     }
 }
 
@@ -119,6 +129,8 @@ collab.init(docId).then(() => {$(function () {
             });
         }
         blessedRenderedHtml = null;
+
+        evalOnBoardChanged();
     }).observe($('#divboard-container')[0], {
         characterData: true, attributes: true, childList: true, subtree: true
     });
@@ -137,12 +149,19 @@ collab.init(docId).then(() => {$(function () {
     // set up src evaluation button
     function evaluateSrc() {
         const src = collab.getSrcEvaluated();
-        // we're going to evaluate the source via an immediately invoked function, but we need to be able
-        // to evaluate expressions in the scope defined by the function, so let's add a return statement
-        // that lets us do that
-        const fn = new Function(src + '\n;return (exp) => eval(exp);');
+        let fn;
         try {
-            evalInSourceScopeFn = fn();
+            fn = new Function(postprocessUserSrcString(src));
+        } catch(err) {
+            // TODO Reflect this in the UI properly, perhaps in a console window
+            console.error('Exception thrown while parsing source. Will keep using functions defined in previous successful evaluation.',
+                src,
+                err
+            );
+            return;
+        }
+        try {
+            currentUdfs = fn();
         } catch (err) {
             // TODO Reflect this in the UI properly, perhaps in a console window
             console.error('Exception thrown while evaluating source. Will keep using functions defined in previous successful evaluation.',
