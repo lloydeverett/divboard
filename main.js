@@ -281,7 +281,7 @@ $(function() {
                         display: none;
                     }
                     ::-webkit-scrollbar-corner {
-                        background-color: #00000000;
+                        background-color: #00000020;
                     }
                 `);
             }
