@@ -269,13 +269,13 @@ $(function() {
                         background-color: #00000020;
                         width: 8px;
                         height: 8px;
-                        border-radius: 4px;
                     }
                     ::-webkit-scrollbar-track {
                         background-color: #00000000;
                     }
                     ::-webkit-scrollbar-thumb {
                         background-color: #00000065;
+                        border-radius: 4px;
                     }
                     ::-webkit-scrollbar-button {
                         display: none;
