@@ -276,7 +276,6 @@ $(function() {
                     }
                     ::-webkit-scrollbar-thumb {
                         background-color: #00000065;
-                        border-radius: 4px;
                     }
                     ::-webkit-scrollbar-button {
                         display: none;
