@@ -331,6 +331,36 @@ div[contenteditable="true"] {
     color: white;
 }
 
+.sidebar-visibility-svg {
+    transform: scale(-1,1);
+}
+.non-wide-layout .sidebar-visibility-svg {
+    transform: scale(-1,1) rotate(270deg);
+}
+.sidebar-visibility-svg-hide {
+    display: none;
+}
+.sidebar-visibility-svg-show {
+    display: block;
+}
+.sidebar-shown .sidebar-visibility-svg-hide {
+    display: block;
+}
+.sidebar-shown .sidebar-visibility-svg-show {
+    display: none;
+}
+
+.main-content, .output {
+    width: 100%;
+    height: 100%;
+}
+body:not(.sidebar-shown) .split > * {
+    display: none;
+}
+body:not(.sidebar-shown) .split > .output {
+    display: block;
+}
+
 .cm-editor .cm-vim-panel input {
     font-family: monospace;
 }

@@ -195,14 +195,15 @@ collab.init(docId).then(() => {$(function () {
 })});
 
 $(function() {
-    // handle viewport width changes, set up splits, and put divboard container elem in the right place
+    // layout setup - create splits, put divboard container elem in the right place, and respect sidebar shown / hidden preference
+    const thresholdWidth = 900;
     let divboardContainer = $('<div class="divboard-container" id="divboard-container"></div>');
     let activeSplits = []
     let showingWideLayout = null;
-    function onViewportWidthChanged() {
+    let sidebarShown = true;
+    function updateLayout() {
         const width = $(window).width();
-        const thresholdWidth = 900;
-        if (width >= thresholdWidth && (showingWideLayout === null || !showingWideLayout)) {
+        if (width >= thresholdWidth) {
             showingWideLayout = true;
             $(document.body).addClass('wide-layout');
             $(document.body).removeClass('non-wide-layout');
@@ -210,20 +211,24 @@ $(function() {
             $('.if-non-wide-layout').hide();
             $('#main-content-divboard-container-parent').append(divboardContainer);
             activeSplits.forEach(function(split) { split.destroy(); })
-            activeSplits = [
-                Split(['#markup', '#src', '#css'], {
-                    minSize: 0,
-                    gutterSize: TITLEBAR_HEIGHT,
-                    direction: 'vertical'
-                }),
-                Split(['#main-content', '#stack'], {
-                    minSize: 0,
-                    gutterSize: HORIZONTAL_GUTTER_SIZE,
-                    direction: 'horizontal',
-                    sizes: [60, 40]
-                }),
-            ];
-        } else if (width < thresholdWidth && (showingWideLayout === null || showingWideLayout)) {
+            if (sidebarShown) {
+                activeSplits = [
+                    Split(['#markup', '#src', '#css'], {
+                        minSize: 0,
+                        gutterSize: TITLEBAR_HEIGHT,
+                        direction: 'vertical'
+                    }),
+                    Split(['#main-content', '#stack'], {
+                        minSize: 0,
+                        gutterSize: HORIZONTAL_GUTTER_SIZE,
+                        direction: 'horizontal',
+                        sizes: [60, 40]
+                    }),
+                ];
+            } else {
+                activeSplits = [];
+            }
+        } else if (width < thresholdWidth) {
             showingWideLayout = false;
             $(document.body).addClass('non-wide-layout');
             $(document.body).removeClass('wide-layout');
@@ -231,17 +236,30 @@ $(function() {
             $('.if-non-wide-layout').show();
             $('#stack-divboard-container-parent').append(divboardContainer);
             activeSplits.forEach(function(split) { split.destroy(); })
-            activeSplits = [
-                Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
-                    minSize: 0,
-                    gutterSize: TITLEBAR_HEIGHT,
-                    direction: 'vertical',
-                    sizes: [45, 55 / 3, 55 / 3, 55 / 3]
-                })
-            ];
+            if (sidebarShown) {
+                activeSplits = [
+                    Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
+                        minSize: 0,
+                        gutterSize: TITLEBAR_HEIGHT,
+                        direction: 'vertical',
+                        sizes: [45, 55 / 3, 55 / 3, 55 / 3]
+                    })
+                ];
+            } else {
+                activeSplits = [];
+            }
         }
     }
-    onViewportWidthChanged();
+    updateLayout();
+
+    // handle viewport width changes
+    function onViewportWidthChanged() {
+        const width = $(window).width();
+        if ((width >= thresholdWidth && (showingWideLayout === null || !showingWideLayout)) ||
+            (width < thresholdWidth && (showingWideLayout === null || showingWideLayout))) {
+            updateLayout();
+        }
+    }
     $(window).on("resize", function(event) {
         onViewportWidthChanged();
     });
@@ -251,6 +269,14 @@ $(function() {
         $(event.currentTarget.parentNode.childNodes).removeClass('button-selected');
         $(event.currentTarget).addClass('button-selected');
     });
+
+    // sidebar show/hide implementation
+    $('.sidebar-visibility-toggle').click(function() {
+        sidebarShown = !sidebarShown;
+        $(document.body).toggleClass('sidebar-shown', sidebarShown);
+        updateLayout();
+    });
+    $(document.body).toggleClass('sidebar-shown', sidebarShown);
 
     // we want to style scrollbars via webkit styles if and only if the user agent is not hiding scrollbars
     // we can do this by creating a measruement node and then determining the width of its scrollbars
