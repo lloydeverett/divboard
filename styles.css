@@ -280,8 +280,10 @@ div[contenteditable="true"] {
 .menubar .button:hover {
     background: #00000046;
 }
-.menubar .button:active {
-    background: #0000007e;
+@media (hover: hover) and (pointer: fine) {
+    .menubar .button:active {
+        background: #0000007e;
+    }
 }
 .menubar-start {
     justify-content: flex-start;
