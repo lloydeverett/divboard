@@ -235,23 +235,33 @@ div[contenteditable="true"] {
     font-size: 0.9em;
     opacity: 0.0;
 }
-.markup .button:hover {
-    background: #6c6c6c36;
-}
 .markup .button:active {
     background: #00000036;
-}
-.src .button:hover, .css .button:hover {
-    background: #0f0f0f36;
 }
 .src .button:active, .css .button:active {
     background: #0000004f;
 }
-.markup .button-selected, .markup .button-selected.button:hover {
+@media (hover: hover) and (pointer: fine) {
+    .markup .button:hover {
+        background: #6c6c6c36;
+    }
+    .src .button:hover, .css .button:hover {
+        background: #0f0f0f36;
+    }
+}
+.markup .button-selected {
     background: #f1deaa;
 }
-.src .button-selected, .src .button-selected.button:hover, .css .button-selected, .css .button-selected.button:hover {
+.src .button-selected, .css .button-selected {
     background: #417b58;
+}
+@media (hover: hover) and (pointer: fine) {
+    .markup .button-selected.button:hover {
+        background: #f1deaa;
+    }
+    .src .button-selected.button:hover, .css .button-selected.button:hover {
+        background: #417b58;
+    }
 }
 
 .menubar {
