@@ -92,7 +92,7 @@ body {
     background-color: #473f3a;
     font-family: "Inter";
     font-weight: 400;
-    margin-top: var(--titlebar-height);
+    /* margin-top: var(--titlebar-height); */
 }
 .output .titlebar {
     background-color: #38312b;
