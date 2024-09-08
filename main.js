@@ -312,8 +312,8 @@ $(function() {
                 $('#scrollbar-styles').html(`
                     ::-webkit-scrollbar {
                         background-color: #00000020;
-                        width: 8px;
-                        height: 8px;
+                        width: 10px;
+                        height: 10px;
                     }
                     ::-webkit-scrollbar-track {
                         background-color: #00000000;
