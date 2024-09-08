@@ -17,7 +17,7 @@ import * as random from 'lib0/random';
 const isFileUrl = window.location.protocol === 'file:';
 
 const YMAP_EVALUATED_SRC_KEY = "evaluatedSrc";
-const HTTP_CONNECTION_STRING = document.location.origin + "/y-sweet/";
+const HTTP_CONNECTION_STRING = window.location.origin + "/y-sweet/";
 const WS_CONNECTION_STRING = HTTP_CONNECTION_STRING.replace(/^https:\/\//, "wss://");
 
 const userColors = [
