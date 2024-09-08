@@ -167,7 +167,7 @@ body {
     font-size: 16px;
 }
 .divboard-container::selection, .divboard-container *::selection {
-    background: #202020;
+    background: #10101050;
 }
 
 .pane-body-inner, .pane-body-inner-stretch {
