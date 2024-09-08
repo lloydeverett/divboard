@@ -148,6 +148,7 @@ collab.init(docId).then(() => {$(function () {
 
     // set up src evaluation button
     function evaluateSrc() {
+        return;
         const src = collab.getSrcEvaluated();
         let fn;
         try {
