@@ -26,6 +26,7 @@ const srcPrefix = `
 function onBoardChanged() {};
 `;
 const srcSuffix = `
+onBoardChanged();
 return {
     onBoardChanged: onBoardChanged
 };
