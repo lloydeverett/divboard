@@ -6,6 +6,7 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
+  overflow: hidden;
 
   color: #0f0f0f;
   background-color: #f6f6f6;
@@ -15,6 +16,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+:root, body {
+  margin: 0;
+}
+
+.window-titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: #232323;
 }
 
 .container {
