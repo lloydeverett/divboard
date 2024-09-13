@@ -1,13 +1,13 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::env;
 use tauri::{LogicalPosition, Manager};
 use tauri_plugin_trafficlights_positioner::WindowExt;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn auth_cookie_value() -> String {
+    env::var("AUTH_COOKIE").expect("AUTH_COOKIE environment variable not set.")
 }
 
 fn main() {
@@ -21,7 +21,7 @@ fn main() {
   
         Ok(())
       })
-      .invoke_handler(tauri::generate_handler![greet])
+      .invoke_handler(tauri::generate_handler![auth_cookie_value])
       .run(tauri::generate_context!())
       .expect("Error while running Divboard Desktop. Please report this error to the developer.");
-  }
+}

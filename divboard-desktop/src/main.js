@@ -1,3 +1,4 @@
+/*
 const { invoke } = window.__TAURI__.tauri;
 
 let greetInputEl;
@@ -16,3 +17,10 @@ window.addEventListener("DOMContentLoaded", () => {
     greet();
   });
 });
+*/
+
+const { invoke } = window.__TAURI__.tauri;
+
+console.log(await invoke("auth_cookie_value", { }));
+// TODO: we might actually want to grab the iframe URL from an environment variable, and then it can
+//       have basic auth / query params / whatever is necessary to authenticate
