@@ -1,4 +1,5 @@
 // constants
+const LOCALSTORAGE_WORKSPACE_LAYOUT_KEY_PREFIX = 'divboard-workspace-layout:';
 const HORIZONTAL_GUTTER_SIZE = 13;
 document.documentElement.style.setProperty('--horizontal-gutter-size', `${HORIZONTAL_GUTTER_SIZE}px`);
 document.documentElement.style.setProperty('--horizontal-gutter-size-negative', `-${HORIZONTAL_GUTTER_SIZE}px`);
@@ -71,6 +72,39 @@ document.title = docId + " – divboard";
 $(function () {
     $("#document-name")[0].innerText = docId;
 });
+
+// workspace layout store
+let workspaceLayout;
+{
+    let stored = {};
+    try {
+        let str = localStorage.getItem(LOCALSTORAGE_WORKSPACE_LAYOUT_KEY_PREFIX + docId);
+        if (str !== null) { stored = JSON.parse(str); }
+    } catch (err) {
+        console.warn('Error while loading workspace layout from local storage. Reverting to defaults.', err);
+    }
+
+    const requireArrayOfNumbers = function (value, fallback) {
+        return Array.isArray(value) && value.every(x => typeof x === 'number' && !Number.isNaN(x)) ? value : fallback;
+    }
+    const requireBoolean = function (value, fallback) {
+        return typeof value === 'boolean' ? value : fallback;
+    }
+
+    workspaceLayout = {
+        'split.wide.main.sizes': requireArrayOfNumbers(stored['split.wide.main.sizes'], [60, 40]),
+        'split.wide.stack.sizes': requireArrayOfNumbers(stored['split.wide.stack.sizes'], [100 / 3, 100 / 3, 100 / 3]),
+        'split.nonwide.stack.sizes': requireArrayOfNumbers(stored['split.nonwide.stack.sizes'], [45, 55 / 3, 55 / 3, 55 / 3]),
+        'sidebar.shown': requireBoolean(stored['sidebar.shown'], true)
+    };
+}
+function saveWorkspaceLayout() {
+    try {
+        localStorage.setItem(LOCALSTORAGE_WORKSPACE_LAYOUT_KEY_PREFIX + docId, JSON.stringify(workspaceLayout));
+    } catch (err) {
+        console.warn('Error while saving workspace layout to local storage. Ignoring.', err);
+    }
+}
 
 // CodeMirror editor + markup rendering
 collab.init(docId).then(() => {$(function () {
@@ -201,9 +235,9 @@ $(function() {
     let divboardContainer = $('<div class="divboard-container" id="divboard-container"></div>');
     let activeSplits = []
     let showingWideLayout = null;
-    let sidebarShown = true;
     function updateLayout() {
         const width = $(window).width();
+        const sidebarShown = workspaceLayout['sidebar.shown'];
         if (width >= thresholdWidth) {
             showingWideLayout = true;
             $(document.body).addClass('wide-layout');
@@ -217,13 +251,22 @@ $(function() {
                     Split(['#markup', '#src', '#css'], {
                         minSize: 0,
                         gutterSize: TITLEBAR_HEIGHT,
-                        direction: 'vertical'
+                        direction: 'vertical',
+                        sizes: workspaceLayout['split.wide.stack.sizes'],
+                        onDragEnd: function (sizes) {
+                            workspaceLayout['split.wide.stack.sizes'] = sizes;
+                            saveWorkspaceLayout();
+                        }
                     }),
                     Split(['#main-content', '#stack'], {
                         minSize: 0,
                         gutterSize: HORIZONTAL_GUTTER_SIZE,
                         direction: 'horizontal',
-                        sizes: [60, 40]
+                        sizes: workspaceLayout['split.wide.main.sizes'],
+                        onDragEnd: function (sizes) {
+                            workspaceLayout['split.wide.main.sizes'] = sizes;
+                            saveWorkspaceLayout();
+                        }
                     }),
                 ];
             } else {
@@ -243,7 +286,11 @@ $(function() {
                         minSize: 0,
                         gutterSize: TITLEBAR_HEIGHT,
                         direction: 'vertical',
-                        sizes: [45, 55 / 3, 55 / 3, 55 / 3]
+                        sizes: workspaceLayout['split.nonwide.stack.sizes'],
+                        onDragEnd: function (sizes) {
+                            workspaceLayout['split.nonwide.stack.sizes'] = sizes;
+                            saveWorkspaceLayout();
+                        }
                     })
                 ];
             } else {
@@ -273,11 +320,12 @@ $(function() {
 
     // sidebar show/hide implementation
     $('.sidebar-visibility-toggle').click(function() {
-        sidebarShown = !sidebarShown;
-        $(document.body).toggleClass('sidebar-shown', sidebarShown);
+        workspaceLayout['sidebar.shown'] = !workspaceLayout['sidebar.shown'];
+        $(document.body).toggleClass('sidebar-shown', workspaceLayout['sidebar.shown']);
+        saveWorkspaceLayout();
         updateLayout();
     });
-    $(document.body).toggleClass('sidebar-shown', sidebarShown);
+    $(document.body).toggleClass('sidebar-shown', workspaceLayout['sidebar.shown']);
 
     // we want to style scrollbars via webkit styles if and only if the user agent is not hiding scrollbars
     // we can do this by creating a measruement node and then determining the width of its scrollbars
