@@ -84,17 +84,18 @@ let workspaceLayout;
         console.warn('Error while loading workspace layout from local storage. Reverting to defaults.', err);
     }
 
-    const requireArrayOfNumbers = function (value, fallback) {
-        return Array.isArray(value) && value.every(x => typeof x === 'number' && !Number.isNaN(x)) ? value : fallback;
+    const requireArrayOfNumbers = function (expectedLength, value, fallback) {
+        if (fallback.length !== expectedLength) { throw new RangeError('Fallback length passed requireArrayOfNumbers to does not match expected length'); }
+        return Array.isArray(value) && value.length === expectedLength && value.every(x => typeof x === 'number' && !Number.isNaN(x)) ? value : fallback;
     }
     const requireBoolean = function (value, fallback) {
         return typeof value === 'boolean' ? value : fallback;
     }
 
     workspaceLayout = {
-        'split.wide.main.sizes': requireArrayOfNumbers(stored['split.wide.main.sizes'], [60, 40]),
-        'split.wide.stack.sizes': requireArrayOfNumbers(stored['split.wide.stack.sizes'], [100 / 3, 100 / 3, 100 / 3]),
-        'split.nonwide.stack.sizes': requireArrayOfNumbers(stored['split.nonwide.stack.sizes'], [45, 55 / 3, 55 / 3, 55 / 3]),
+        'split.wide.main.sizes': requireArrayOfNumbers(2, stored['split.wide.main.sizes'], [60, 40]),
+        'split.wide.stack.sizes': requireArrayOfNumbers(3, stored['split.wide.stack.sizes'], [100 / 3, 100 / 3, 100 / 3]),
+        'split.nonwide.stack.sizes': requireArrayOfNumbers(4, stored['split.nonwide.stack.sizes'], [45, 55 / 3, 55 / 3, 55 / 3]),
         'sidebar.shown': requireBoolean(stored['sidebar.shown'], true)
     };
 }
