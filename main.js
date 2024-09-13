@@ -85,7 +85,7 @@ let workspaceLayout;
     }
 
     const requireArrayOfNumbers = function (expectedLength, value, fallback) {
-        if (fallback.length !== expectedLength) { throw new RangeError('Fallback length passed requireArrayOfNumbers to does not match expected length'); }
+        if (fallback.length !== expectedLength) { throw new RangeError('Fallback length passed to requireArrayOfNumbers does not match expected length'); }
         return Array.isArray(value) && value.length === expectedLength && value.every(x => typeof x === 'number' && !Number.isNaN(x)) ? value : fallback;
     }
     const requireBoolean = function (value, fallback) {
