@@ -9,6 +9,6 @@ cd dist
 perl -pi -e 's/\/assets\//\//g' index.html
 mv ./assets/* .
 rm -rf ./assets
-cp -r ../*.png ../*.xml ../*.ico ../*.svg ../*.webmanifest ../fonts .
+cp -r ../public/* ../fonts .
 cd ..
 
