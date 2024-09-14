@@ -19,6 +19,13 @@ body {
       "slnt" 0;
     background-color: #232323;
 }
+div[contenteditable="true"] {
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: 0;
+}
 .main {
     display: flex;
     flex-direction: row;
@@ -89,7 +96,7 @@ body {
 }
 
 .output {
-    background-color: #473f3a;
+    background-color: #32302f;
     font-family: "Inter";
     font-weight: 400;
     /* margin-top: var(--titlebar-height); */
@@ -176,31 +183,6 @@ body {
 }
 .pane-body-inner-stretch > * {
     height: 100%;
-}
-
-.textedit {
-    min-height: calc(100% - 20px);
-    padding: 10px;
-    font-size: 15px;
-    font-family: "Inconsolata", monospace;
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-style: normal;
-    font-variation-settings:
-      "wdth" 100;
-    background: none;
-    border: none;
-    outline: none;
-    box-shadow: none;
-    margin: 0;
-    white-space: pre;
-}
-div[contenteditable="true"] {
-    background: none;
-    border: none;
-    outline: none;
-    box-shadow: none;
-    margin: 0;
 }
 
 .button-group {
