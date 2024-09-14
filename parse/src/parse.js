@@ -25,11 +25,7 @@ function getDomPath(el, rootNode) {
             return stack;
         }
 
-        if (el.hasAttribute('id') && el.id !== '') {
-            stack.unshift({ nodeName: el.nodeName.toLowerCase(), id: el.id, element: el });
-        } else {
-            stack.unshift({ nodeName: el.nodeName.toLowerCase(), index: sibIndex, element: el });
-        }
+        stack.unshift({ nodeName: el.nodeName.toLowerCase(), index: sibIndex, element: el });
 
         el = el.parentNode;
     }
@@ -60,11 +56,7 @@ function getAstPath(astNode) {
             }
         }
 
-        if ('attribs' in astNode && 'id' in astNode.attribs && astNode.attribs.id !== '') {
-            stack.unshift({ nodeName: astNode.name.toLowerCase(), id: astNode.attribs.id, astNode: astNode });
-        } else {
-            stack.unshift({ nodeName: astNode.name.toLowerCase(), index: sibIndex, astNode: astNode });
-        }
+        stack.unshift({ nodeName: astNode.name.toLowerCase(), index: sibIndex, astNode: astNode });
 
         astNode = astNode.parentNode;
     }
@@ -108,20 +100,11 @@ function followPathInDomBestEffort(rootNode, path) {
     for (i = 0; i < path.length; i++) {
         let filtered = Array.prototype.filter.call(node.childNodes, n => 'nodeName' in n && n.nodeName.toLowerCase() === path[i].nodeName);
 
-        if ('id' in path[i]) {
-            const id = path[i].id;
-            filtered = Array.prototype.filter.call(filtered, n => n.id === id);
-            if (filtered.length !== 1) {
-                break;
-            }
-            node = filtered[0];
-        } else {
-            const index = path[i].index;
-            if (index >= filtered.length) {
-                break;
-            }
-            node = filtered[index];
+        const index = path[i].index;
+        if (index >= filtered.length) {
+            break;
         }
+        node = filtered[index];
     }
 
     return { node: node, pathFollowed: path.slice(0, i) };
