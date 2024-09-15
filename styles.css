@@ -59,6 +59,7 @@ div[contenteditable="true"] {
     pointer-events: none;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -254,6 +255,7 @@ div[contenteditable="true"] {
     color: white;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .menubar > * {
     font-size: 1.15em;
