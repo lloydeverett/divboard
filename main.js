@@ -219,7 +219,7 @@ collab.init(docId).then(() => {$(function () {
         updateSrcEvaluationButton();
     });
     updateSrcEvaluationButton();
-    $('#src-evaluate-button').click(function() {
+    $('#src-evaluate-button').on('mousedown', function() {
         collab.setSrcEvaluated(srcEditor.state.doc.toString());
     });
 
@@ -314,13 +314,13 @@ $(function() {
     });
 
     // button group implementation
-    $('.button-group > .button').click(function (event) {
+    $('.button-group > .button').on('mousedown', function (event) {
         $(event.currentTarget.parentNode.childNodes).removeClass('button-selected');
         $(event.currentTarget).addClass('button-selected');
     });
 
     // sidebar show/hide implementation
-    $('.sidebar-visibility-toggle').click(function() {
+    $('.sidebar-visibility-toggle').on('mousedown', function() {
         workspaceLayout['sidebar.shown'] = !workspaceLayout['sidebar.shown'];
         $(document.body).toggleClass('sidebar-shown', workspaceLayout['sidebar.shown']);
         saveWorkspaceLayout();
