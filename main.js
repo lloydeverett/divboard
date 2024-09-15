@@ -1,3 +1,5 @@
+"use strict";
+
 // constants
 const LOCALSTORAGE_WORKSPACE_LAYOUT_KEY_PREFIX = 'divboard-workspace-layout:';
 const HORIZONTAL_GUTTER_SIZE = 13;
