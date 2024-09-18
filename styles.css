@@ -356,6 +356,12 @@ body:not(.sidebar-shown) .split > * {
 body:not(.sidebar-shown) .split > .output {
     display: block;
 }
+body:not(.sidebar-shown) .main > * {
+    display: none;
+}
+body:not(.sidebar-shown) .main > .main-content, body.non-wide-layout:not(.sidebar-shown) .main > .stack {
+    display: block;
+}
 
 .cm-editor .cm-vim-panel input {
     font-family: monospace;

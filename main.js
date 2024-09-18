@@ -241,6 +241,17 @@ $(function() {
     function updateLayout() {
         const width = $(window).width();
         const sidebarShown = workspaceLayout['sidebar.shown'];
+        const elementStyle = function (dimension, size, gutterSize) {
+            return {
+                'flex-grow': '1',
+                'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)',
+            }
+        };
+        const gutterStyle = function (dimension, gutterSize) {
+            return {
+                'flex-basis': gutterSize + 'px',
+            }
+        };
         if (width >= thresholdWidth) {
             showingWideLayout = true;
             $(document.body).addClass('wide-layout');
@@ -249,32 +260,32 @@ $(function() {
             $('.if-non-wide-layout').hide();
             $('#main-content-divboard-container-parent').append(divboardContainer);
             activeSplits.forEach(function(split) { split.destroy(); })
-            if (sidebarShown) {
-                activeSplits = [
-                    Split(['#markup', '#src', '#css'], {
-                        minSize: 0,
-                        gutterSize: TITLEBAR_HEIGHT,
-                        direction: 'vertical',
-                        sizes: workspaceLayout['split.wide.stack.sizes'],
-                        onDragEnd: function (sizes) {
-                            workspaceLayout['split.wide.stack.sizes'] = sizes;
-                            saveWorkspaceLayout();
-                        }
-                    }),
-                    Split(['#main-content', '#stack'], {
-                        minSize: 0,
-                        gutterSize: HORIZONTAL_GUTTER_SIZE,
-                        direction: 'horizontal',
-                        sizes: workspaceLayout['split.wide.main.sizes'],
-                        onDragEnd: function (sizes) {
-                            workspaceLayout['split.wide.main.sizes'] = sizes;
-                            saveWorkspaceLayout();
-                        }
-                    }),
-                ];
-            } else {
-                activeSplits = [];
-            }
+            activeSplits = [
+                Split(['#markup', '#src', '#css'], {
+                    minSize: 0,
+                    gutterSize: TITLEBAR_HEIGHT,
+                    direction: 'vertical',
+                    sizes: workspaceLayout['split.wide.stack.sizes'],
+                    onDragEnd: function (sizes) {
+                        workspaceLayout['split.wide.stack.sizes'] = sizes;
+                        saveWorkspaceLayout();
+                    },
+                    elementStyle: elementStyle,
+                    gutterStyle: gutterStyle
+                }),
+                Split(['#main-content', '#stack'], {
+                    minSize: 0,
+                    gutterSize: HORIZONTAL_GUTTER_SIZE,
+                    direction: 'horizontal',
+                    sizes: workspaceLayout['split.wide.main.sizes'],
+                    onDragEnd: function (sizes) {
+                        workspaceLayout['split.wide.main.sizes'] = sizes;
+                        saveWorkspaceLayout();
+                    },
+                    elementStyle: elementStyle,
+                    gutterStyle: gutterStyle
+                }),
+            ];
         } else if (width < thresholdWidth) {
             showingWideLayout = false;
             $(document.body).addClass('non-wide-layout');
@@ -283,22 +294,20 @@ $(function() {
             $('.if-non-wide-layout').show();
             $('#stack-divboard-container-parent').append(divboardContainer);
             activeSplits.forEach(function(split) { split.destroy(); })
-            if (sidebarShown) {
-                activeSplits = [
-                    Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
-                        minSize: 0,
-                        gutterSize: TITLEBAR_HEIGHT,
-                        direction: 'vertical',
-                        sizes: workspaceLayout['split.nonwide.stack.sizes'],
-                        onDragEnd: function (sizes) {
-                            workspaceLayout['split.nonwide.stack.sizes'] = sizes;
-                            saveWorkspaceLayout();
-                        }
-                    })
-                ];
-            } else {
-                activeSplits = [];
-            }
+            activeSplits = [
+                Split(['#output-displayed-in-stack', '#markup', '#src', '#css'], {
+                    minSize: 0,
+                    gutterSize: TITLEBAR_HEIGHT,
+                    direction: 'vertical',
+                    sizes: workspaceLayout['split.nonwide.stack.sizes'],
+                    onDragEnd: function (sizes) {
+                        workspaceLayout['split.nonwide.stack.sizes'] = sizes;
+                        saveWorkspaceLayout();
+                    },
+                    elementStyle: elementStyle,
+                    gutterStyle: gutterStyle
+                })
+            ];
         }
     }
     updateLayout();
@@ -326,7 +335,6 @@ $(function() {
         workspaceLayout['sidebar.shown'] = !workspaceLayout['sidebar.shown'];
         $(document.body).toggleClass('sidebar-shown', workspaceLayout['sidebar.shown']);
         saveWorkspaceLayout();
-        updateLayout();
     });
     $(document.body).toggleClass('sidebar-shown', workspaceLayout['sidebar.shown']);
 
