@@ -240,7 +240,6 @@ $(function() {
     let showingWideLayout = null;
     function updateLayout() {
         const width = $(window).width();
-        const sidebarShown = workspaceLayout['sidebar.shown'];
         const elementStyle = function (dimension, size, gutterSize) {
             return {
                 'flex-grow': '1',
